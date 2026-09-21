@@ -36,7 +36,16 @@ Route::middleware(['auth', 'single.session'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         Route::delete('/ips/delete/{id}', [MonitorController::class, 'destroy'])->name('monitor.destroy');
     });
+
+    // Restrict Delete and Counselling List strictly to Admin level
+    Route::middleware(['role:admin'])->group(function () {
+        Route::delete('/ips/delete/{id}', [MonitorController::class, 'destroy'])->name('monitor.destroy');
+        
+        // Admin Only: Counselling List Route
+        Route::get('/counselling/list', [ConsultingController::class, 'list'])->name('counselling.list');
+    });
 });
+
 
 // 2. Catch unauthenticated users (PUBLIC - OUTSIDE THE MIDDLEWARE)
 Route::get('/', function () {
