@@ -8,14 +8,14 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
-    <div class="d-flex">
+<body class="bg-light overflow-x-hidden">
+    <div class="d-flex w-100 overflow-x-hidden">
         
         <!-- SIDEBAR -->
         @include('partials.sidebar')
 
         <!-- MAIN CONTENT WRAPPER (Added min-vh-100 to push footer down) -->
-        <div class="main-content d-flex flex-column min-vh-100" style="margin-left: 260px;">
+        <div class="main-content d-flex flex-column min-vh-100">
             
             <!-- HEADER -->
             <nav class="navbar top-header px-4 py-3 d-flex justify-content-between align-items-center">
