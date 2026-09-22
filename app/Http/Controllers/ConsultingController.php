@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Consulting;
 
 class ConsultingController extends Controller
@@ -17,33 +18,25 @@ class ConsultingController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'patient_name' => 'required|string|max:100',
-            'mrn'          => 'required|string|max:50',
-            'ward'         => 'required|string',
-            'bed'          => 'required|string|max:20',
-            'consult_info' => 'required|string',
-            'medstatus'    => 'required|string',
-            'doc'          => 'required|string|max:100',
-            'special_request' => 'nullable|string'
+        DB::table('consulting')->insert([
+            'date' => date('Y-m-d'),
+            'time' => date('H:i:s'),
+            'ward' => $request->ward,
+            'bed' => $request->bed,
+            'patient_name' => $request->patient_name,
+            'mrn' => $request->mrn,
+            'consult_info' => $request->consult_info,
+            'medstatus' => $request->medstatus,
+            'status' => 'REFERRED',
+            'doc' => $request->doc,
+            'special_request' => $request->special_request ?? '-',
+            'remarks' => $request->remarks ?? '-', 
+            
+            // Bypass MySQL strict mode by explicitly providing a valid timestamp
+            'patient_stamp' => date('Y-m-d H:i:s'),
         ]);
 
-        // Save using strtoupper just like the legacy code
-        Consulting::create([
-            'date'            => now()->toDateString(),
-            'time'            => now()->toTimeString(),
-            'ward'            => strtoupper($request->ward),
-            'bed'             => strtoupper($request->bed),
-            'patient_name'    => strtoupper($request->patient_name),
-            'mrn'             => strtoupper($request->mrn),
-            'consult_info'    => strtoupper($request->consult_info),
-            'medstatus'       => strtoupper($request->medstatus),
-            'status'          => 'REFERRED', // Default status from legacy
-            'doc'             => strtoupper($request->doc),
-            'special_request' => strtoupper($request->special_request ?? ''),
-        ]);
-
-        return back()->with('success', 'Consultation Order was successfully sent to Pharmacy Department. We will attend to the request as soon as possible.');
+        return redirect()->back()->with('success', 'Counselling Request submitted successfully!');
     }
 
     public function list(Request $request)
@@ -89,5 +82,22 @@ class ConsultingController extends Controller
                          ->withQueryString();
 
         return view('counselling.list', compact('records'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Sanitize incoming data to bypass strict mode / null constraints
+        $status = $request->input('status', 'PENDING');
+        $remarks = $request->input('remarks') ?? '-';
+
+        // Update the legacy consulting table using the Query Builder
+        DB::table('consulting')
+            ->where('no', $id) // The legacy primary key is 'no'
+            ->update([
+                'status' => $status,
+                'remarks' => $remarks
+            ]);
+
+        return redirect()->back()->with('success', 'Counselling Order updated successfully.');
     }
 }

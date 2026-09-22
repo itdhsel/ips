@@ -13,7 +13,7 @@
     @if($errors->any())
         <div class="alert alert-danger shadow-sm">
             <ul class="mb-0">
-                @foreach($errors->all() as $error) <li>{{ $error }}</li> @endforeach
+                @foreach($errors->all() as $error) <li>{{$error }}</li> @endforeach
             </ul>
         </div>
     @endif
@@ -38,14 +38,17 @@
                 @csrf
                 <div class="row g-4">
                     
-                    <!-- Patient Name & MRN -->
-                    <div class="col-md-8">
-                        <label class="fw-bold mb-1">Patient Name <span class="text-danger">*</span></label>
-                        <input type="text" name="patient_name" class="form-control bg-light" required>
-                    </div>
+                    <!-- MRN & Patient Name Swap -->
                     <div class="col-md-4">
                         <label class="fw-bold mb-1">MRN <span class="text-danger">*</span></label>
-                        <input type="text" name="mrn" class="form-control bg-light" required>
+                        <div class="input-group">
+                            <input type="text" id="mrn_search" name="mrn" class="form-control bg-light text-uppercase" required>
+                            <button type="button" class="btn btn-outline-primary fw-bold px-3" id="btnSearchMrn" title="Search MRN">🔍</button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="fw-bold mb-1">Patient Name <span class="text-danger">*</span></label>
+                        <input type="text" id="patient_name" name="patient_name" class="form-control bg-light text-uppercase" required>
                     </div>
 
                     <!-- Ward/Unit & Bed No -->
@@ -53,6 +56,9 @@
                         <label class="fw-bold mb-1">Ward/Unit <span class="text-danger">*</span></label>
                         <select name="ward" class="form-select bg-light" required>
                             <option value="">-- Select Ward --</option>
+                            @php
+                                $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
+                            @endphp
                             @foreach($wards as $w)
                                 <option value="{{ $w }}">{{ $w }}</option>
                             @endforeach
@@ -195,5 +201,33 @@
         document.getElementById('medSelect').value = "";
         document.getElementById('dosInput').value = "";
     }
+
+    // MRN Auto-Fill Search API
+    document.getElementById('btnSearchMrn')?.addEventListener('click', function() {
+        let mrn = document.getElementById('mrn_search').value.trim();
+        if (!mrn) {
+            alert('Please enter an MRN to search.');
+            return;
+        }
+        
+        // Add a simple loading state to the button
+        let btn = this;
+        let originalText = btn.innerHTML;
+        btn.innerHTML = '⏳';
+        
+        fetch(`/api/search-mrn?mrn=${encodeURIComponent(mrn)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.patient_name) {
+                    document.getElementById('patient_name').value = data.patient_name;
+                } else {
+                    alert('MRN not found in master list.');
+                }
+            })
+            .catch(error => console.error('Error fetching MRN:', error))
+            .finally(() => {
+                btn.innerHTML = originalText;
+            });
+    });
 </script>
 @endpush

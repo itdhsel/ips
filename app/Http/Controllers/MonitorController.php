@@ -82,21 +82,18 @@ class MonitorController extends Controller
         return redirect()->route('monitor.index')->with('success', 'Patient record added successfully.');
     }
 
-    // Update patient status
-    public function update(Request $request, $no)
+    public function update(Request $request, $id)
     {
-        $patient = Patient::findOrFail($no);
+        $patient = Patient::findOrFail($id);
 
-        $validatedData = $request->validate([
-            'status' => 'required|string|max:35',
-            'remarks' => 'nullable|string|max:100',
-            'statusready' => 'nullable',
-            'statuscollected' => 'nullable',
+        $patient->update([
+            'status'  => $request->input('status'),
+            // The ?? operator catches Laravel's null conversion and forces a dash instead
+            'takenby' => $request->input('takenby') ?? '-',
+            'remarks' => $request->input('remarks') ?? '-',
         ]);
 
-        $patient->update($validatedData);
-
-        return redirect()->route('monitor.index')->with('success', 'Patient record updated successfully.');
+        return redirect()->back()->with('success', 'Patient order updated successfully.');
     }
 
     // Delete patient record

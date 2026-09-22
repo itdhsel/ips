@@ -51,6 +51,12 @@
             </form>
         </div>
     </div>
+    
+    @if(session('success'))
+        <div class="alert alert-success shadow-sm fw-bold mb-4 no-print">
+            ✅ {{ session('success') }}
+        </div>
+    @endif
 
     <!-- TABLE SECTION -->
     <div class="card shadow-sm border-0 rounded">
@@ -99,9 +105,8 @@
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 35px;">No</th>
-                        <th class="text-center no-print" style="width: 45px;">Select</th>
                         <th class="text-center" style="width: 85px;">Date</th>
-                        <th class="text-center" style="width: 70px;">Time Ordered</th>
+                        <th class="text-center" style="width: 70px;">Time</th>
                         <th class="text-center" style="width: 65px;">Ward</th>
                         <th style="min-width: 150px;">Name</th>
                         <th class="text-center" style="width: 95px;">MRN</th>
@@ -110,18 +115,15 @@
                         <th style="min-width: 130px;">Doctor</th>
                         <th class="text-center" style="width: 110px;">Status</th>
                         <th style="min-width: 140px;">Remarks</th>
+                        <th class="text-center no-print" style="width: 80px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($records as $index =>$item)
+                        @php $rowId = $item->id ?? $item->no; @endphp
                         <tr>
                             <!-- No -->
                             <td class="text-center fw-bold">{{ $records->firstItem() +$index }}</td>
-                            
-                            <!-- Select Checkbox -->
-                            <td class="text-center no-print">
-                                <input type="checkbox" name="selected_ids[]" value="{{ $item->no ?? $item->id ?? '' }}">
-                            </td>
                             
                             <!-- Date -->
                             <td class="text-center fw-bold">{{ $item->date ?? '-' }}</td>
@@ -145,15 +147,15 @@
                             
                             <!-- Counselling Order -->
                             <td class="fw-bold text-uppercase">
-                                {{ $item->counselling_order ?? $item->medication ?? '-' }}
+                                {{ $item->counselling_order ?? $item->consult_info ?? $item->medication ?? '-' }}
                             </td>
                             
-                            <!-- Doctor -->
-                            <td class="fw-bold text-uppercase">{{ $item->doctor_name ?? $item->doctor ?? '-' }}</td>
+                            <!-- Doctor (Now checking the 'doc' column explicitly) -->
+                            <td class="fw-bold text-uppercase">{{ $item->doc ?? $item->doctor_name ?? $item->doctor ?? '-' }}</td>
                             
                             <!-- Status Dropdown -->
                             <td class="text-center">
-                                <select class="form-select form-select-sm legacy-select fw-bold">
+                                <select name="status" form="updateForm{{ $rowId }}" class="form-select form-select-sm legacy-select fw-bold">
                                     <option value="REFERRED" {{ ($item->status ?? '') == 'REFERRED' ? 'selected' : '' }}>REFERRED</option>
                                     <option value="PENDING" {{ ($item->status ?? '') == 'PENDING' ? 'selected' : '' }}>PENDING</option>
                                     <option value="COMPLETED" {{ ($item->status ?? '') == 'COMPLETED' ? 'selected' : '' }}>COMPLETED</option>
@@ -163,8 +165,17 @@
                             
                             <!-- Remarks Input -->
                             <td>
-                                <input type="text" class="form-control form-control-sm legacy-remark-input fw-bold" 
+                                <input type="text" name="remarks" form="updateForm{{ $rowId }}" class="form-control form-control-sm legacy-remark-input fw-bold" 
                                        value="{{ $item->remarks ?? '' }}" placeholder="Enter remarks...">
+                            </td>
+
+                            <!-- Action Update Button -->
+                            <td class="text-center no-print">
+                                <form id="updateForm{{ $rowId }}" action="{{ route('counselling.update', $rowId) }}" method="POST">
+                                    @csrf
+                                    <!-- Using PUT method if your web.php route requires it, otherwise POST -->
+                                    <button type="submit" class="btn btn-sm btn-primary fw-bold px-2 shadow-sm">Update</button>
+                                </form>
                             </td>
                         </tr>
                     @empty

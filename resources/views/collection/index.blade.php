@@ -113,11 +113,11 @@
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center bg-white no-print">
-                                    @if($patient->status == 'READY FOR COLLECTION' && empty($patient->takenby))
-                                        <input type="checkbox" name="selectedData[]" value="{{ $patient->no }}" class="chk-item" style="transform: scale(1.3);">
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
+                                @if($patient->status == 'READY FOR COLLECTION' && (empty($patient->takenby) || $patient->takenby === '-'))
+                                    <input type="checkbox" name="selectedData[]" value="{{ $patient->no }}" class="chk-item" style="transform: scale(1.3);">
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
                                 </td>
                                 <td><strong>{{ date('d/m/Y', strtotime($patient->date)) }}</strong><br><small class="text-muted d-print-none">{{ $patient->time }}</small></td>
                                 <td><span class="badge bg-secondary px-2">{{ $patient->ward }}</span></td>

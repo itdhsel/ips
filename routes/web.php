@@ -26,6 +26,7 @@ Route::middleware(['auth', 'single.session'])->group(function () {
     // iMonitor: Counselling Request Routes
     Route::get('/counselling', [ConsultingController::class, 'index'])->name('counselling.index');
     Route::post('/counselling', [ConsultingController::class, 'store'])->name('counselling.store');
+    Route::post('/counselling/update/{id}', [ConsultingController::class, 'update'])->name('counselling.update');
 
     // iMonitor: Discharge Medication Collection Routes
     Route::get('/collection', [CollectionController::class, 'index'])->name('collection.index');

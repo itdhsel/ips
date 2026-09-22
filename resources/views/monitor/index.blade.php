@@ -147,7 +147,7 @@
                             <div class="modal fade text-start" id="editModal{{ $patient->no }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <form method="POST" action="{{ route('monitor.update', $patient->no) }}">
-                                        @csrf @method('PUT')
+                                        @csrf
                                         <div class="modal-content border-0 shadow">
                                             <div class="modal-header bg-primary text-white">
                                                 <h5 class="modal-title fw-bold">✏️ Edit Patient Order</h5>
