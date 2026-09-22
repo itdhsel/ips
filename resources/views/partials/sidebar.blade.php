@@ -1,125 +1,136 @@
-<div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow-sm">
+<!-- SIDEBAR WITH FIXED HEADER & FOOTER TOGGLE -->
+<div class="sidebar bg-dark text-white d-flex flex-column vh-100 position-sticky top-0" id="sidebar" style="cursor: pointer; overflow: hidden;">
     
-    <!-- 1. Top Row: System Branding (+ Icon & System Title) -->
-    <a href="/" class="d-flex align-items-center text-white text-decoration-none mb-4 border-bottom border-secondary pb-3 w-100 brand-container">
-        <div class="bg-primary text-white rounded d-flex justify-content-center align-items-center me-2 shadow-sm brand-icon" style="width: 40px; height: 40px; flex-shrink: 0;">
-            <!-- Pharmacy Cross (+) SVG -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M13.5 8a.5.5 0 0 1-.5.5h-4v4a.5.5 0 0 1-1 0v-4h-4a.5.5 0 0 1 0-1h4v-4a.5.5 0 0 1 1 0v4h4a.5.5 0 0 1 .5.5z"/>
-            </svg>
+    <!-- 1. FIXED BRANDING HEADER (NO SCROLL) -->
+    <div class="sidebar-header p-3 text-center border-bottom border-secondary flex-shrink-0">
+        <h5 class="m-0 fw-bold sidebar-title text-truncate" title="Integrated Pharmacy System">🏥 IPS</h5>
+        <div class="sidebar-text text-white-50 small mt-1 fw-bold" style="line-height: 1.2;">
+            Integrated<br>Pharmacy System
         </div>
-        <div class="sidebar-text">
-            <span class="fs-6 fw-bold d-block text-uppercase" style="letter-spacing: 0.5px;">Integrated</span>
-            <span class="fs-6 fw-bold d-block text-uppercase text-primary" style="letter-spacing: 0.5px;">Pharmacy System</span>
-        </div>
-    </a>
-
-    <!-- Navigation List -->
-    <ul class="nav nav-pills flex-column mb-auto gap-2">
-        
-        <!-- 1. Main Dashboard -->
-        <li class="nav-item">
-            <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" title="Dashboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 mb-1" viewBox="0 0 16 16"><path d="M2 3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H2zm.5 1h11a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5zM3 5.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/></svg>
-                <span class="sidebar-text">Dashboard</span>
-            </a>
-        </li>
-
-        <hr class="text-secondary my-1">
-
-        <!-- 2. iMonitor Group -->
-        @php
-            $isImonitorActive = request()->routeIs('monitor.*') || request()->routeIs('counselling.*') || request()->routeIs('collection.*');
-        @endphp
-        
-        <li class="nav-item">
-            <a href="#imonitorSubmenu" data-bs-toggle="collapse" class="nav-link {{ $isImonitorActive ? 'text-white fw-bold' : 'text-white-50' }} d-flex justify-content-between align-items-center" aria-expanded="{{ $isImonitorActive ? 'true' : 'false' }}" title="iMonitor">
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 mb-1" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514ZM8 1c-1.573 0-3.022.289-4.096.777C2.875 2.227 2 3.066 2 4s.875 1.773 1.904 2.223C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777C13.125 5.773 14 4.934 14 4s-.875-1.773-1.904-2.223C11.022 1.289 9.573 1 8 1Z"/></svg>
-                    <span class="sidebar-text">iMonitor</span>
-                </span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" style="transition: transform 0.2s;" class="chevron-icon {{ $isImonitorActive ? 'rotate-180' : '' }}">
-                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                </svg>
-            </a>
-            
-            <!-- Collapsible Submenu -->
-            <ul class="collapse {{ $isImonitorActive ? 'show' : '' }} nav flex-column ms-3 mt-2 border-start border-secondary ps-2" id="imonitorSubmenu">
-                <li class="nav-item mb-1">
-                    <a href="{{ route('monitor.index') }}" class="nav-link small {{ request()->routeIs('monitor.*') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}">
-                        Discharge Medications Status
-                    </a>
-                </li>
-                <li class="nav-item mb-1">
-                    <a href="{{ route('counselling.index') }}" class="nav-link small {{ request()->routeIs('counselling.index') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}">
-                        Counselling Request
-                    </a>
-                </li>
-
-                <!-- Admin Only: Counselling List Submodule -->
-                @if(auth()->check() && auth()->user()->role === 'admin')
-                <li class="nav-item mb-1">
-                    <a href="{{ route('counselling.list') }}" class="nav-link small {{ request()->routeIs('counselling.list') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}">
-                        Counselling List
-                    </a>
-                </li>
-                @endif
-
-                <li class="nav-item">
-                    <a href="{{ route('collection.index') }}" class="nav-link small {{ request()->routeIs('collection.*') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}">
-                        Discharge Medication Collection
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        <hr class="text-secondary my-1">
-
-        <!-- 3. eCDR Group -->
-        <li class="nav-item">
-            <a href="#" class="nav-link text-white-50" title="eCDR">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 mb-1" viewBox="0 0 16 16"><path d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/></svg>
-                <span class="sidebar-text">eCDR (Cytotoxic Drug)</span>
-            </a>
-        </li>
-    </ul>
-
-    <!-- 2. Bottom Row: Sidebar Toggle Button (☰) -->
-    <div class="mt-auto pt-3 border-top border-secondary w-100 toggle-container">
-        <button type="button" onclick="toggleSidebar(event)" class="sidebar-toggle-btn w-100 d-flex align-items-center justify-content-center gap-2" title="Toggle Sidebar">
-            <span class="fs-6">☰</span>
-            <span class="sidebar-text small fw-bold">Collapse Sidebar</span>
-        </button>
     </div>
+    
+    <!-- 2. SCROLLABLE MODULE & SUBMODULE NAV AREA -->
+    <div class="flex-grow-1 overflow-y-auto px-2 py-3 custom-sidebar-scroll">
+        <ul class="nav nav-pills flex-column gap-1">
+            
+            <!-- DASHBOARD -->
+            <li class="nav-item mb-2">
+                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" title="Dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 mb-1 sidebar-icon" viewBox="0 0 16 16"><path d="M2 3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H2zm.5 1h11a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5zM3 5.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/></svg>
+                    <span class="sidebar-text">Dashboard</span>
+                </a>
+            </li>
+
+            @php
+                // Keep iMonitor accordion open if any submodule is active
+                $isMonitorActive = in_array(request()->route()->getName(), [
+                    'monitor.index', 
+                    'collection.index', 
+                    'counselling.index', 
+                    'counselling.list', 
+                    'reports.index'
+                ]);
+            @endphp
+
+            <!-- iMONITOR MODULE (ACCORDION) -->
+            <li class="nav-item border-top border-secondary pt-2">
+                <a class="nav-link d-flex justify-content-between align-items-center {{ $isMonitorActive ? 'text-white fw-bold' : 'text-white-50' }}" data-bs-toggle="collapse" href="#collapseMonitor" role="button" aria-expanded="{{ $isMonitorActive ? 'true' : 'false' }}" aria-controls="collapseMonitor">
+                    <div class="d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 sidebar-icon" viewBox="0 0 16 16"><path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"/></svg>
+                        <span class="sidebar-text">iMonitor</span>
+                    </div>
+                    <span class="sidebar-text text-muted" style="font-size: 0.75rem;">▼</span>
+                </a>
+                
+                <!-- Submodules -->
+                <div class="collapse {{ $isMonitorActive ? 'show' : '' }}" id="collapseMonitor">
+                    <ul class="nav nav-pills flex-column mt-1 mb-2 gap-1" style="padding-left: 1.25rem;">
+                        <li class="nav-item">
+                            <a href="{{ route('monitor.index') }}" class="nav-link {{ request()->routeIs('monitor.index') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Status">
+                                <span class="sidebar-text small">Status</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('collection.index') }}" class="nav-link {{ request()->routeIs('collection.index') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Collection">
+                                <span class="sidebar-text small">Collection</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('counselling.index') }}" class="nav-link {{ request()->routeIs('counselling.index') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Counselling Req">
+                                <span class="sidebar-text small">Counselling Req</span>
+                            </a>
+                        </li>
+
+                        @if(auth()->check() && auth()->user()->role === 'admin')
+                            <li class="nav-item">
+                                <a href="{{ route('counselling.list') }}" class="nav-link {{ request()->routeIs('counselling.list') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Counselling List">
+                                    <span class="sidebar-text small">Counselling List 🔒</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.index') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Reporting">
+                                    <span class="sidebar-text small">Reporting 🔒</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            </li>
+
+            <!-- eCDR MODULE (ACCORDION) -->
+            <li class="nav-item border-top border-secondary pt-2">
+                <a class="nav-link text-white-50 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseEcdr" role="button" aria-expanded="false" aria-controls="collapseEcdr">
+                    <div class="d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 sidebar-icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path fill-rule="evenodd" d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708z"/></svg>
+                        <span class="sidebar-text">eCDR</span>
+                    </div>
+                    <span class="sidebar-text text-muted" style="font-size: 0.75rem;">▼</span>
+                </a>
+                
+                <div class="collapse" id="collapseEcdr">
+                    <ul class="nav nav-pills flex-column mt-1 mb-2 gap-1" style="padding-left: 1.25rem;">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-white-50" style="padding: 0.4rem 1rem;" title="Cytotoxic Drug">
+                                <span class="sidebar-text small">Cytotoxic Drug</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <!-- 3. FIXED TOGGLE BUTTON AT BOTTOM (NO SCROLL) -->
+    <div class="mt-auto border-top border-secondary p-2 d-flex justify-content-center sidebar-toggle-container flex-shrink-0 bg-dark">
+        <button id="sidebarToggleBtn" class="btn btn-dark w-100 fs-5" title="Toggle Sidebar">☰</button>
+    </div>
+
 </div>
 
 <script>
-    // Toggle Button Handler
-    function toggleSidebar(e) {
-        if (e) e.stopPropagation(); // Prevents triggering container click event
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar) {
-            sidebar.classList.toggle('collapsed');
-            localStorage.setItem('ips_sidebar_collapsed', sidebar.classList.contains('collapsed'));
+    document.addEventListener("DOMContentLoaded", function() {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("sidebarToggleBtn");
+
+        // Restore collapsed state from LocalStorage
+        if (localStorage.getItem("sidebarCollapsed") === "true") {
+            sidebar.classList.add("collapsed");
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const sidebar = document.getElementById('sidebar');
+        // Toggle button click logic
+        toggleBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem("sidebarCollapsed", sidebar.classList.contains("collapsed"));
+        });
 
-        if (sidebar) {
-            // Restore saved collapsed state
-            if (localStorage.getItem('ips_sidebar_collapsed') === 'true') {
-                sidebar.classList.add('collapsed');
+        // Click anywhere on sidebar to restore if collapsed
+        sidebar.addEventListener("click", function() {
+            if (sidebar.classList.contains("collapsed")) {
+                sidebar.classList.remove("collapsed");
+                localStorage.setItem("sidebarCollapsed", "false");
             }
-
-            // Click anywhere on collapsed sidebar to automatically expand
-            sidebar.addEventListener('click', function(e) {
-                if (sidebar.classList.contains('collapsed')) {
-                    sidebar.classList.remove('collapsed');
-                    localStorage.setItem('ips_sidebar_collapsed', 'false');
-                }
-            });
-        }
+        });
     });
 </script>

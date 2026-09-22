@@ -31,6 +31,9 @@ Route::middleware(['auth', 'single.session'])->group(function () {
     Route::get('/collection', [CollectionController::class, 'index'])->name('collection.index');
     Route::post('/collection/update', [CollectionController::class, 'store'])->name('collection.store');
 
+    // iMonitor: Reporting Submodule
+    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+
     // API Routes
     Route::get('/api/search-mrn', [MonitorController::class, 'searchMrn'])->name('api.search.mrn');
 
