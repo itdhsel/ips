@@ -1,9 +1,14 @@
 <!-- SIDEBAR WITH FIXED HEADER & FOOTER TOGGLE -->
 <div class="sidebar bg-dark text-white d-flex flex-column vh-100 position-sticky top-0" id="sidebar" style="cursor: pointer; overflow: hidden;">
     
-    <!-- 1. FIXED BRANDING HEADER (NO SCROLL) -->
-    <div class="sidebar-header p-3 text-center border-bottom border-secondary flex-shrink-0">
-        <h5 class="m-0 fw-bold sidebar-title text-truncate" title="Integrated Pharmacy System">🏥 IPS</h5>
+<!-- 1. FIXED BRANDING HEADER (NO SCROLL) -->
+<div class="sidebar-header p-3 text-center border-bottom border-secondary flex-shrink-0">
+        <h5 class="m-0 fw-bold sidebar-title text-truncate d-flex align-items-center justify-content-center gap-1" title="Integrated Pharmacy System">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#0dcaf0" viewBox="0 0 16 16">
+                <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657L7.485 14.557A4 4 0 1 1 1.828 8.9Zm1.414 1.414a2 2 0 1 0 2.828 2.828l3.536-3.536-2.828-2.828-3.536 3.536Zm8.486-8.486a2 2 0 0 0-2.828 0L5.364 5.364l2.828 2.828 3.536-3.536a2 2 0 0 0 0-2.828Z"/>
+            </svg>
+            <span>IPS</span>
+        </h5>
         <div class="sidebar-text text-white-50 small mt-1 fw-bold" style="line-height: 1.2;">
             Integrated<br>Pharmacy System
         </div>
@@ -101,9 +106,9 @@
         </ul>
     </div>
     
-    <!-- 3. FIXED TOGGLE BUTTON AT BOTTOM (NO SCROLL) -->
-    <div class="mt-auto border-top border-secondary p-2 d-flex justify-content-center sidebar-toggle-container flex-shrink-0 bg-dark">
-        <button id="sidebarToggleBtn" class="btn btn-dark w-100 fs-5" title="Toggle Sidebar">☰</button>
+    <!-- 3. FIXED TOGGLE BUTTON AT BOTTOM (MATCHED HEIGHT) -->
+    <div class="mt-auto border-top border-secondary px-2 d-flex align-items-center justify-content-center sidebar-toggle-container flex-shrink-0 bg-dark">
+        <button id="sidebarToggleBtn" class="btn btn-dark w-100 py-1 fs-5" title="Toggle Sidebar">☰</button>
     </div>
 
 </div>

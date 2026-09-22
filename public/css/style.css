@@ -35,12 +35,19 @@ html, body {
 
 .main-footer {
     width: 100%;
+    height: 52px !important;
+    box-sizing: border-box;
     background-color: #112a46;
-    padding: 0.85rem 1rem;
+    padding: 0 1rem;
     text-align: center;
     font-size: 0.85rem;
     color: #ffffff;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     z-index: 80;
 }
 
@@ -129,8 +136,14 @@ html, body {
 
 /* Bottom Toggle Container */
 .sidebar-toggle-container {
+    height: 52px !important;            /* Fixed height matching main footer */
+    box-sizing: border-box;
     background-color: #101820 !important;
     flex-shrink: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5rem !important;
 }
 
 .sidebar-toggle-btn {
@@ -275,6 +288,7 @@ html, body {
 
 /* --- 7. Data-Only Print View Engine --- */
 @media print {
+    /* Hide non-printable UI elements */
     #sidebar,
     .sidebar,
     .top-header,
@@ -284,7 +298,6 @@ html, body {
     .pagination,
     .btn,
     .card-header-actions,
-    form,
     nav,
     footer {
         display: none !important;
@@ -293,22 +306,12 @@ html, body {
         padding: 0 !important;
     }
 
-    .print-filter-summary {
-        display: block !important;
-        background-color: #f8f9fa !important;
-        border: 1px solid #000000 !important;
-        padding: 6px 10px !important;
-        margin-bottom: 8px !important;
-        font-size: 9pt !important;
-        color: #000000 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
+    /* UNLOCK FIXED CONTAINER HEIGHTS & SCROLLBARS FOR PRINT */
     html, 
     body, 
     .d-flex, 
     .main-content, 
+    .content-body,
     .container-fluid {
         background: #ffffff !important;
         background-color: #ffffff !important;
@@ -317,9 +320,19 @@ html, body {
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
         box-shadow: none !important;
         position: static !important;
         overflow: visible !important;
+    }
+
+    /* Force Table Containers to Expand Across Multiple Pages */
+    .table-responsive {
+        overflow: visible !important;
+        display: block !important;
+        width: 100% !important;
     }
 
     .card {
@@ -328,12 +341,15 @@ html, body {
         background: transparent !important;
         margin: 0 !important;
         padding: 0 !important;
+        overflow: visible !important;
     }
 
     .card-body {
         padding: 0 !important;
+        overflow: visible !important;
     }
 
+    /* Print Header Banner */
     .legacy-table-header {
         background-color: #d3d3d3 !important;
         color: #000000 !important;
@@ -346,6 +362,8 @@ html, body {
         print-color-adjust: exact !important;
     }
 
+    /* Printable Table Formatting */
+    .custom-table,
     .legacy-table {
         width: 100% !important;
         border-collapse: collapse !important;
@@ -353,6 +371,7 @@ html, body {
         margin-top: 0 !important;
     }
 
+    .custom-table th,
     .legacy-table th {
         background-color: #e0e0e0 !important;
         color: #000000 !important;
@@ -364,6 +383,7 @@ html, body {
         print-color-adjust: exact !important;
     }
 
+    .custom-table td,
     .legacy-table td {
         border: 1px solid #000000 !important;
         padding: 4px 6px !important;
@@ -371,16 +391,21 @@ html, body {
         color: #000000 !important;
     }
 
-    .legacy-remark-input,
-    .legacy-select {
-        border: none !important;
-        background: transparent !important;
-        appearance: none !important;
-        -webkit-appearance: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        font-size: 8pt !important;
-        font-weight: bold !important;
+    /* Prevent rows from breaking awkwardly in half across page ends */
+    tr {
+        page-break-inside: avoid !important;
+    }
+
+    /* Printable Filter Summary */
+    .print-filter-summary {
+        display: block !important;
+        background-color: #f8f9fa !important;
+        border: 1px solid #000000 !important;
+        padding: 6px 10px !important;
+        margin-bottom: 8px !important;
+        font-size: 9pt !important;
         color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }
