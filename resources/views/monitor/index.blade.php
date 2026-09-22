@@ -11,14 +11,16 @@
 <body class="bg-light overflow-x-hidden">
     <div class="d-flex w-100 overflow-x-hidden">
         
-        <!-- SIDEBAR -->
-        @include('partials.sidebar')
+        <!-- SIDEBAR (HIDDEN ON PRINT) -->
+        <div class="no-print">
+            @include('partials.sidebar')
+        </div>
 
-        <!-- MAIN CONTENT WRAPPER (Added min-vh-100 to push footer down) -->
+        <!-- MAIN CONTENT WRAPPER -->
         <div class="main-content d-flex flex-column min-vh-100">
             
-            <!-- HEADER -->
-            <nav class="navbar top-header px-4 py-3 d-flex justify-content-between align-items-center">
+            <!-- HEADER (HIDDEN ON PRINT) -->
+            <nav class="navbar top-header px-4 py-3 d-flex justify-content-between align-items-center no-print">
                 <h4 class="mb-0 fw-bold text-dark">Live Monitoring</h4>
                 <div class="text-muted small">
                     Logged in as: <strong class="text-dark">{{ auth()->user()->login_username ?? 'Unknown' }}</strong> 
@@ -29,38 +31,44 @@
             <!-- PAGE CONTENT -->
             <div class="container-fluid p-4">
                 
-                <!-- 1. FULL WIDTH FILTER SECTION -->
-                <div class="card shadow-sm mb-4 border-0">
+                <!-- 1. FULL WIDTH FILTER SECTION (HIDDEN ON PRINT) -->
+                <div class="card shadow-sm mb-4 border-0 no-print">
                     <div class="card-body bg-white rounded">
-                        <form action="{{ route('monitor.index') }}" method="GET" class="row g-3 align-items-end m-0">
-                            
-                        <!-- Date Range -->
-                        <div class="col-md-5">
-                            <div class="d-flex justify-content-between align-items-end mb-1">
-                                <label class="form-label fw-bold small mb-0 text-primary">📅 Filter by Date Range</label>
-                                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.75rem;" onclick="setToday()">Set Today</button>
+                        <form action="{{ route('monitor.index') }}" method="GET" id="filterForm" class="row g-3 align-items-end m-0">
+                            <!-- UNIFIED DATE FILTER -->
+                            <div class="col-md-5">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label fw-bold small text-primary mb-0">📅 Filter by Date Range</label>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="setDatePreset('today')">Today</button>
+                                        <button type="button" class="btn btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="setDatePreset('yesterday')">Yesterday</button>
+                                        <button type="button" class="btn btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="setDatePreset('all')">All</button>
+                                    </div>
+                                </div>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light border-secondary">From</span>
+                                    <input type="date" id="start_date" name="start_date" class="form-control border-secondary" value="{{ request('start_date', date('Y-m-d')) }}">
+                                    <span class="input-group-text bg-light border-secondary">To</span>
+                                    <input type="date" id="end_date" name="end_date" class="form-control border-secondary" value="{{ request('end_date', date('Y-m-d')) }}">
+                                </div>
                             </div>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-light border-secondary">From</span>
-                                <input type="date" id="start_date" name="start_date" class="form-control border-secondary" value="{{ request('start_date', date('Y-m-d')) }}">
-                                <span class="input-group-text bg-light border-secondary">To</span>
-                                <input type="date" id="end_date" name="end_date" class="form-control border-secondary" value="{{ request('end_date', date('Y-m-d')) }}">
-                            </div>
-                        </div>
                             
+                            <!-- WARD FILTER -->
                             <div class="col-md-5">
                                 <label class="form-label fw-bold small mb-1 text-primary">🏥 Filter by Ward</label>
-                                <select name="ward" class="form-select form-select-sm border-secondary">
-                                    <option value="">-- All Wards --</option>
+                                <select name="ward" id="filter_ward" class="form-select form-select-sm border-secondary">
+                                    <!-- Added value="ALL" to fix validation issues -->
+                                    <option value="ALL" {{ request('ward', 'ALL') == 'ALL' ? 'selected' : '' }}>-- All Wards --</option>
                                     @php
                                         $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
                                     @endphp
-                                    @foreach($wards as $w)
+                                    @foreach ($wards as $w)
                                         <option value="{{ $w }}" {{ request('ward') == $w ? 'selected' : '' }}>{{ $w }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             
+                            <!-- ACTION BUTTONS -->
                             <div class="col-md-2 d-flex gap-2">
                                 <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold w-100">Search</button>
                                 <a href="{{ route('monitor.index') }}" class="btn btn-outline-secondary btn-sm px-3 w-100">Reset</a>
@@ -70,39 +78,57 @@
                 </div>
                 
                 @if(session('success'))
-                    <div class="alert alert-success shadow-sm">{{ session('success') }}</div>
+                    <div class="alert alert-success shadow-sm no-print">{{ session('success') }}</div>
                 @endif
                 @if($errors->any())
-                    <div class="alert alert-danger shadow-sm">
+                    <div class="alert alert-danger shadow-sm no-print">
                         <ul class="mb-0">
-                            @foreach($errors->all() as $error)
+                            @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
 
-                <!-- 2. ADD NEW PATIENT BUTTON -->
+                <!-- 2. DATA RESULTS HEADER & ACTION BUTTONS -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold text-secondary mb-0">Data Results</h5>
-                    @if(auth()->check() && in_array(auth()->user()->role, ['admin', 'pharmacy']))
-                        <button type="button" class="btn btn-success shadow-sm px-4 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#addModal">
-                            + Add New Patient
+                    <div class="d-flex gap-2 no-print">
+                        <button type="button" onclick="window.print()" class="btn btn-secondary shadow-sm px-4 py-2 fw-bold">
+                            🖨️ Print Data
                         </button>
-                    @endif
+                        @if(auth()->check() && in_array(auth()->user()->role, ['admin', 'pharmacy']))
+                            <button type="button" class="btn btn-success shadow-sm px-4 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#addModal">
+                                + Add New Patient
+                            </button>
+                        @endif
+                    </div>
                 </div>
 
-<!-- LAST UPDATED TIMESTAMP -->
-<div class="text-center fw-bold mb-3 text-dark">
+                <!-- LAST UPDATED TIMESTAMP -->
+                <div class="text-center fw-bold mb-3 text-dark">
                     Last updated on {{ date('d-m-Y H:i:s') }}
+                </div>
+
+                <!-- PRINT-ONLY FILTER SUMMARY (APPEARS ONLY ON PRINT) -->
+                <div class="print-filter-summary d-none">
+                    <strong class="text-uppercase">Active Filter Criteria:</strong>
+                    <span class="ms-2">
+                        <strong>Date Range:</strong> 
+                        {{ request('start_date', date('Y-m-d')) }}
+                        {{ request('end_date') ? ' to ' . request('end_date', date('Y-m-d')) : '' }}
+                    </span>
+                    @if(request('ward'))
+                        <span class="ms-3"><strong>Ward:</strong> {{ request('ward') }}</span>
+                    @endif
                 </div>
 
                 <!-- 3. TABLE AREA -->
                 <div class="card shadow border-0 rounded">
                     <div class="card-body p-0 table-responsive">
-                        <table class="table table-bordered table-hover mb-0 custom-table">
+                        <table class="table table-bordered table-hover mb-0 custom-table legacy-table">
                             <thead>
-                                <tr>
+                                <tr class="legacy-table-header">
                                     <th>No</th>
                                     <th>Date</th>
                                     <th>Time Ordered</th>
@@ -114,11 +140,11 @@
                                     <th>Status</th>
                                     <th>Collected by</th>
                                     <th>Remarks</th>
-                                    <th>Action</th>
+                                    <th class="no-print">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($patients as $patient)
+                                @forelse ($patients as $patient)
                                     <tr>
                                         <td>{{ $patient->no }}</td>
                                         <td>{{ $patient->date }}</td>
@@ -152,7 +178,7 @@
                                         </td>
                                         <td>{{ $patient->takenby }}</td>
                                         <td>{{ $patient->remarks }}</td>
-                                        <td>
+                                        <td class="no-print">
                                             <div class="d-flex justify-content-center gap-1">
                                                 @if(auth()->check() && in_array(auth()->user()->role, ['admin', 'pharmacy']))
                                                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ $patient->no }}">Edit</button>
@@ -169,8 +195,8 @@
                                         </td>
                                     </tr>
 
-                                    <!-- Update Modal for this specific Patient -->
-                                    <div class="modal fade" id="updateModal{{ $patient->no }}" tabindex="-1" aria-hidden="true">
+                                    <!-- Update Modal for this specific Patient (HIDDEN ON PRINT) -->
+                                    <div class="modal fade no-print" id="updateModal{{ $patient->no }}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <form action="{{ route('monitor.update', $patient->no) }}" method="POST">
                                                 @csrf
@@ -215,8 +241,8 @@
                     </div>
                 </div>
 
-                <!-- WORKFLOW LEGEND -->
-                <div class="workflow-legend mb-4">
+                <!-- WORKFLOW LEGEND (HIDDEN ON PRINT) -->
+                <div class="workflow-legend mb-4 no-print">
                     <div class="legend-step status-received">ORDER RECEIVED</div>
                     <div class="legend-step status-processing">PROCESSING</div>
                     <div class="legend-step status-ready">READY FOR COLLECTION</div>
@@ -224,26 +250,26 @@
                     <div class="legend-step status-completed">COMPLETED</div>
                 </div>
                 
-                <!-- Pagination -->
-                <div class="d-flex justify-content-center mt-2">
+                <!-- Pagination (HIDDEN ON PRINT) -->
+                <div class="d-flex justify-content-center mt-2 no-print">
                     {{ $patients->withQueryString()->links('pagination::bootstrap-5') }}
                 </div>
 
             </div>
             
-            <!-- GLOBAL FOOTER -->
-            <footer class="main-footer">
+            <!-- GLOBAL FOOTER (HIDDEN ON PRINT) -->
+            <footer class="main-footer no-print">
                 &copy; 2026 Hospital Selayang. Developed by Muhammad Haziq Zikri (ITD HSEL)
             </footer>
 
         </div>
     </div>
 
-    <!-- SCROLL TO TOP BUTTON -->
-    <button id="scrollTopBtn" title="Go to top">⬆️</button>
+    <!-- SCROLL TO TOP BUTTON (HIDDEN ON PRINT) -->
+    <button id="scrollTopBtn" class="no-print" title="Go to top">⬆️</button>
 
-    <!-- Add New Patient Modal -->
-    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+    <!-- Add New Patient Modal (HIDDEN ON PRINT) -->
+    <div class="modal fade no-print" id="addModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form action="{{ route('monitor.store') }}" method="POST">
                 @csrf
@@ -285,7 +311,7 @@
                                     @php
                                         $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
                                     @endphp
-                                    @foreach($wards as $w)
+                                    @foreach ($wards as $w)
                                         <option value="{{ $w }}">{{ $w }}</option>
                                     @endforeach
                                 </select>
@@ -332,11 +358,11 @@
     <!-- Custom Scripts -->
     <script>
         // 1. Smart Auto Refresh Script (Every 30 secs)
-        setInterval(function() {
-            if (!document.body.classList.contains('modal-open')) {
-                window.location.reload();
-            }
-        }, 30000);
+        // setInterval(function() {
+        //     if (!document.body.classList.contains('modal-open')) {
+        //         window.location.reload();
+        //     }
+        // }, 30000);
 
         // 2. Scroll to Top Button Logic
         let upButton = document.getElementById("scrollTopBtn");
@@ -355,16 +381,36 @@
             };
         }
 
-        // 3. Date Range "Today" Button Logic
-        function setToday() {
+        // 3. Unified Date Preset Helper
+        function setDatePreset(type) {
+            let startDateInput = document.getElementById('start_date');
+            let endDateInput = document.getElementById('end_date');
+            let form = document.getElementById('filterForm');
+            let wardSelect = document.getElementById('filter_ward');
             let d = new Date();
-            let year = d.getFullYear();
-            let month = String(d.getMonth() + 1).padStart(2, '0');
-            let day = String(d.getDate()).padStart(2, '0');
-            let todayString = `${year}-${month}-${day}`;
-            
-            document.getElementById('start_date').value = todayString;
-            document.getElementById('end_date').value = todayString;
+
+            if (type === 'today') {
+                let year = d.getFullYear();
+                let month = String(d.getMonth() + 1).padStart(2, '0');
+                let day = String(d.getDate()).padStart(2, '0');
+                let todayStr = `${year}-${month}-${day}`;
+                startDateInput.value = todayStr;
+                endDateInput.value = todayStr;
+            } else if (type === 'yesterday') {
+                d.setDate(d.getDate() - 1);
+                let year = d.getFullYear();
+                let month = String(d.getMonth() + 1).padStart(2, '0');
+                let day = String(d.getDate()).padStart(2, '0');
+                let yestStr = `${year}-${month}-${day}`;
+                startDateInput.value = yestStr;
+                endDateInput.value = yestStr;
+            } else if (type === 'all') {
+                // Clear dates and explicitly reset the ward to ALL
+                startDateInput.value = '';
+                endDateInput.value = '';
+                if (wardSelect) wardSelect.value = 'ALL';
+            }
+            form.submit();
         }
 
         // 4. MRN Search with Magnifying Glass

@@ -7,25 +7,52 @@ use App\Models\Patient;
 
 class MonitorController extends Controller
 {
-    // Display the main monitoring dashboard with Range Filters
+    // 1. NEW: Live Corporate Dashboard
+    public function dashboard()
+    {
+        $today = date('Y-m-d');
+        
+        // Calculate KPI Metrics for today
+        $kpi = [
+            'total' => Patient::where('date', $today)->count(),
+            'processing' => Patient::where('date', $today)->where('status', 'PROCESSING')->count(),
+            'ready' => Patient::where('date', $today)->where('status', 'READY FOR COLLECTION')->count(),
+            'completed' => Patient::where('date', $today)->whereIn('status', ['COMPLETED', 'COLLECTED BY PHARMACIST OR PPK/SN', 'COLLECTED BY STAFF NURSE/PPK'])->count(),
+        ];
+
+        // Fetch active queue (excluding completed orders)
+        $activeQueue = Patient::where('date', $today)
+            ->whereNotIn('status', ['COMPLETED', 'COLLECTED BY PHARMACIST OR PPK/SN', 'COLLECTED BY STAFF NURSE/PPK'])
+            ->orderBy('time', 'desc')
+            ->get();
+
+        return view('dashboard', compact('kpi', 'activeQueue'));
+    }
+
+    // 2. Main Monitoring History (IPS)
     public function index(Request $request)
     {
         $query = Patient::query(); 
 
-        // 1. Get Start and End Dates (Defaults to TODAY if empty)
-        $startDate = $request->input('start_date', date('Y-m-d'));
-        $endDate = $request->input('end_date', date('Y-m-d'));
-
-        // 2. Apply Date Range Filter
-        $query->whereBetween('date', [$startDate, $endDate]);
-
-        // 3. Apply Ward Dropdown Filter (Exact match instead of 'like')
-        if ($request->filled('ward')) {
-            $query->where('ward', $request->input('ward'));
+        // Initial page load defaults to today. If user submits with blank dates (e.g. clicks "All"), skip date filter.
+        if (!$request->has('start_date')) {
+            $query->where('date', date('Y-m-d'));
+        } else {
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $query->whereBetween('date', [$request->start_date, $request->end_date]);
+            } elseif ($request->filled('start_date')) {
+                $query->where('date', '>=', $request->start_date);
+            } elseif ($request->filled('end_date')) {
+                $query->where('date', '<=', $request->end_date);
+            }
         }
 
-        // 4. Order by newest first, and paginate (50 per page)
-        $patients = $query->orderBy('patient_stamp', 'desc')->paginate(50);
+        // Apply Ward Dropdown Filter (Ignore "ALL")
+        if ($request->filled('ward') && $request->ward !== 'ALL') {
+            $query->where('ward', $request->ward);
+        }
+
+        $patients = $query->orderBy('date', 'desc')->orderBy('time', 'desc')->paginate(50)->withQueryString();
 
         return view('monitor.index', compact('patients'));
     }
@@ -89,7 +116,6 @@ class MonitorController extends Controller
             return response()->json(['success' => false]);
         }
 
-        // Search the patientlist table
         $patient = \Illuminate\Support\Facades\DB::table('patientlist')
             ->where('mrn', $mrn)
             ->first();

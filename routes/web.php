@@ -6,12 +6,20 @@ use App\Http\Controllers\ConsultingController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\SsoController;
 
-// 1. Keep SSO Callback matching central SSO server redirect URL
+// 1. Catch unauthenticated users (The 'auth' middleware automatically redirects here)
+Route::get('/login', function () {
+    return redirect('http://hsel-sso.ddev.site/login'); 
+})->name('login');
+
+// 2. SSO Callback matching central SSO server redirect URL
 Route::get('/imonitor/sso/callback', [SsoController::class, 'handleCallback']);
 
-// Protected Application Routes (STRICTLY FOR LOGGED IN USERS)
+// 3. Protected Application Routes (STRICTLY FOR LOGGED IN USERS)
 Route::middleware(['auth', 'single.session'])->group(function () {
     
+    // Live Corporate Dashboard
+    Route::get('/', [MonitorController::class, 'dashboard'])->name('dashboard');
+
     // iMonitor: Discharge Medications Status Route
     Route::get('/ips', [MonitorController::class, 'index'])->name('monitor.index');
 
@@ -32,23 +40,10 @@ Route::middleware(['auth', 'single.session'])->group(function () {
         Route::post('/ips/update/{id}', [MonitorController::class, 'update'])->name('monitor.update');
     });
 
-    // Restrict Delete strictly to Admin level
-    Route::middleware(['role:admin'])->group(function () {
-        Route::delete('/ips/delete/{id}', [MonitorController::class, 'destroy'])->name('monitor.destroy');
-    });
-
     // Restrict Delete and Counselling List strictly to Admin level
     Route::middleware(['role:admin'])->group(function () {
         Route::delete('/ips/delete/{id}', [MonitorController::class, 'destroy'])->name('monitor.destroy');
-        
-        // Admin Only: Counselling List Route
         Route::get('/counselling/list', [ConsultingController::class, 'list'])->name('counselling.list');
     });
+
 });
-
-
-// 2. Catch unauthenticated users (PUBLIC - OUTSIDE THE MIDDLEWARE)
-Route::get('/', function () {
-    // Redirects the user back to your SSO login page
-    return redirect('http://hsel-sso.ddev.site/login'); 
-})->name('login');
