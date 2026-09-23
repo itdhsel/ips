@@ -55,9 +55,13 @@ Route::middleware(['auth', 'single.session'])->group(function () {
         Route::get('/counselling/list', [ConsultingController::class, 'list'])->name('counselling.list');
     });
 
-    // eCDR (Cytotoxic Drug) Module Routes (Consolidated)
-    Route::get('/ecdr', [EcdrController::class, 'index'])->name('ecdr.index');
+    // eCDR Submodules
+    Route::get('/ecdr/create', [EcdrController::class, 'create'])->name('ecdr.create');
+    Route::get('/ecdr/ward-list', [EcdrController::class, 'wardList'])->name('ecdr.ward_list');
+    Route::get('/ecdr/history', [EcdrController::class, 'history'])->name('ecdr.history');
+
+    // eCDR Actions (Keep these the same)
     Route::post('/ecdr/store', [EcdrController::class, 'store'])->name('ecdr.store');
-    Route::post('/ecdr/update/{id}', [EcdrController::class, 'update'])->name('ecdr.update');
+    Route::get('/ecdr/show/{id}', [EcdrController::class, 'show'])->name('ecdr.show');
     Route::post('/ecdr/cancel/{id}', [EcdrController::class, 'cancel'])->name('ecdr.cancel');
 });

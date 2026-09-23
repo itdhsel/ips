@@ -95,8 +95,18 @@
                 <div class="collapse {{ request()->routeIs('ecdr.*') ? 'show' : '' }}" id="collapseEcdr">
                     <ul class="nav nav-pills flex-column mt-1 mb-2 gap-1" style="padding-left: 1.25rem;">
                         <li class="nav-item">
-                            <a href="{{ route('ecdr.index') }}" class="nav-link {{ request()->routeIs('ecdr.*') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Ordering">
-                                <span class="sidebar-text small">Ordering</span>
+                            <a href="{{ route('ecdr.create') }}" class="nav-link {{ request()->routeIs('ecdr.create') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Place New Order">
+                                <span class="sidebar-text small">Place New Order</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ecdr.history') }}" class="nav-link {{ request()->routeIs('ecdr.history') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="View My Orders">
+                                <span class="sidebar-text small">View My Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ecdr.ward_list') }}" class="nav-link {{ request()->routeIs('ecdr.ward_list') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Ward Order List">
+                                <span class="sidebar-text small">Ward Order List</span>
                             </a>
                         </li>
                     </ul>
