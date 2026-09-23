@@ -55,7 +55,7 @@ class MonitorController extends Controller
 
         $patients = $query->orderBy('date', 'desc')->orderBy('time', 'desc')->paginate(50)->withQueryString();
 
-        return view('monitor.index', compact('patients'));
+        return view('imonitor.status', compact('patients'));
     }
 
     // Insert new patient record
@@ -118,7 +118,7 @@ class MonitorController extends Controller
         $patient = Patient::findOrFail($no);
         $patient->delete();
 
-        return redirect()->route('monitor.index')->with('success', 'Patient record deleted successfully.');
+        return redirect()->route('status.blade')->with('success', 'Patient record deleted successfully.');
     }
 
     public function searchMrn(Request $request)

@@ -39,7 +39,7 @@ class CollectionController extends Controller
         $startDate = $request->has('start_date') ? $request->start_date : date('Y-m-d');
         $endDate = $request->has('end_date') ? $request->end_date : date('Y-m-d');
 
-        return view('collection.index', compact('wards', 'selectedWard', 'startDate', 'endDate', 'patients'));
+        return view('imonitor.collection', compact('wards', 'selectedWard', 'startDate', 'endDate', 'patients'));
     }
 
     public function store(Request $request)

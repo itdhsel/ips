@@ -13,7 +13,7 @@ class ConsultingController extends Controller
         // List of wards for the dropdown
         $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
         
-        return view('counselling.index', compact('wards'));
+        return view('imonitor.counselling_req', compact('wards'));
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class ConsultingController extends Controller
         // 2. Return empty collection by default if no search has been initiated
         if (!$hasSearch) {
             $records = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 50);
-            return view('counselling.list', compact('records'));
+            return view('imonitor.counselling_list', compact('records'));
         }
 
         $query = \Illuminate\Support\Facades\DB::table('consulting');
@@ -81,7 +81,7 @@ class ConsultingController extends Controller
                          ->paginate(50)
                          ->withQueryString();
 
-        return view('counselling.list', compact('records'));
+        return view('imonitor.counselling_list', compact('records'));
     }
 
     public function update(Request $request, $id)
