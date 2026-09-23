@@ -1,118 +1,123 @@
-<!-- View Order Modal -->
-<div class="modal fade" id="viewOrderModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Order Details</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="modalLoading" class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2">Loading details...</p>
-                </div>
-                <div id="modalContent" style="display: none;">
-                    <h6 class="fw-bold border-bottom pb-1">Patient Details</h6>
-                    <div class="row mb-3 small">
-                        <div class="col-md-6"><strong>Name:</strong> <span id="mdl_name"></span></div>
-                        <div class="col-md-6"><strong>MRN:</strong> <span id="mdl_mrn"></span></div>
-                        <div class="col-md-6"><strong>Ward:</strong> <span id="mdl_ward"></span></div>
-                        <div class="col-md-6"><strong>Protocol:</strong> <span id="mdl_protocol"></span></div>
-                        <div class="col-md-4"><strong>Height:</strong> <span id="mdl_height"></span> cm</div>
-                        <div class="col-md-4"><strong>Weight:</strong> <span id="mdl_weight"></span> kg</div>
-                        <div class="col-md-4"><strong>BSA:</strong> <span id="mdl_bsa"></span> m²</div>
+<!-- VIEW ORDER DETAIL MODAL -->
+<div class="modal fade" id="viewOrderModal" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            
+            <!-- MODAL HEADER -->
+            <div class="modal-header px-4 py-3" style="background: #ffffff; border-bottom: 1px solid #f4f5f7;">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 36px; height: 36px; border-radius: 10px; background: #e3efff; color: #0066ff; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-prescription2 fs-5"></i>
                     </div>
+                    <div>
+                        <h6 class="modal-title fw-bold text-dark mb-0" id="viewOrderModalLabel">Cytotoxic Reconstitution Order Details</h6>
+                        <span class="text-muted" style="font-size: 11px;">Order ID: <strong id="modal_order_id" style="color: #0066ff;">#--</strong></span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-                    <h6 class="fw-bold border-bottom pb-1">Treatment Cycles</h6>
-                    <ul id="mdl_cycles" class="mb-3 small text-primary fw-bold"></ul>
-
-                    <h6 class="fw-bold border-bottom pb-1">Cytotoxic Drugs</h6>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered small">
-                            <thead class="table-light">
-                                <tr><th>Drug</th><th>Dose</th><th>Diluent</th><th>Volume</th></tr>
-                            </thead>
-                            <tbody id="mdl_drugs"></tbody>
-                        </table>
+            <!-- MODAL BODY -->
+            <div class="modal-body p-4" style="background: #f8f9fa;">
+                
+                <!-- PATIENT & DEMOGRAPHICS SUMMARY -->
+                <div class="p-3 mb-3 bg-white rounded-3 shadow-sm" style="border: 1px solid #f4f5f7;">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="fw-bold text-uppercase mb-0" id="modal_patient_name" style="color: #172b4d; font-size: 15px;">-</h6>
+                            <div class="text-muted" style="font-size: 12px;">MRN: <span id="modal_mrn" class="fw-bold text-dark">-</span></div>
+                        </div>
+                        <span id="modal_status_badge" class="medi-badge badge-stage-1 px-3 py-1">ORDER RECEIVED</span>
                     </div>
                     
-                    <div class="mt-2 small">
-                        <strong>Remarks:</strong> <span id="mdl_remarks"></span>
+                    <hr class="my-2" style="border-color: #f4f5f7;">
+
+                    <div class="row g-2" style="font-size: 12px;">
+                        <div class="col-md-3">
+                            <span class="text-muted d-block" style="font-size: 11px;">Ward / Bed</span>
+                            <strong id="modal_ward" style="color: #32325d;">-</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="text-muted d-block" style="font-size: 11px;">Age / Gender</span>
+                            <strong id="modal_age_sex" style="color: #32325d;">-</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="text-muted d-block" style="font-size: 11px;">Weight / Height</span>
+                            <strong id="modal_weight_height" style="color: #32325d;">-</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="text-muted d-block" style="font-size: 11px;">BSA (m²)</span>
+                            <strong id="modal_bsa" style="color: #0066ff;">-</strong>
+                        </div>
                     </div>
                 </div>
+
+                <!-- DIAGNOSIS & REGIMEN -->
+                <div class="p-3 mb-3 bg-white rounded-3 shadow-sm" style="border: 1px solid #f4f5f7;">
+                    <div class="row g-2" style="font-size: 12px;">
+                        <div class="col-md-6">
+                            <span class="text-muted d-block" style="font-size: 11px;">Clinical Diagnosis</span>
+                            <strong id="modal_diagnosis" style="color: #32325d;">-</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted d-block" style="font-size: 11px;">Protocol / Regimen</span>
+                            <strong id="modal_protocol" style="color: #32325d;">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DRUG DETAILS TABLE -->
+                <div class="medi-table-container mb-3 bg-white">
+                    <div class="p-2 px-3 border-bottom fw-bold" style="font-size: 12px; color: #525f7f; background: #fafbfc;">
+                        <i class="bi bi-capsule me-1 text-primary"></i> Prescribed Cytotoxic Items
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table medi-table mb-0 w-100" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th width="40%">Drug Name</th>
+                                    <th width="20%">Dose</th>
+                                    <th width="20%">Diluent</th>
+                                    <th width="20%">Volume</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modal_drug_list">
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">Loading drug specifications...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- REMARKS & PHYSICIAN INFO -->
+                <div class="p-3 bg-white rounded-3 shadow-sm" style="border: 1px solid #f4f5f7; font-size: 12px;">
+                    <div class="mb-2">
+                        <span class="text-muted d-block" style="font-size: 11px;">Remarks / Special Instructions</span>
+                        <div id="modal_remarks" class="fw-medium text-dark">-</div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top" style="border-color: #f4f5f7 !important;">
+                        <div>
+                            <span class="text-muted" style="font-size: 11px;">Ordered By:</span> 
+                            <strong id="modal_orderedby" style="color: #172b4d;">-</strong>
+                        </div>
+                        <div>
+                            <span class="text-muted" style="font-size: 11px;">Preparation Date:</span> 
+                            <strong id="modal_date_use" style="color: #0066ff;">-</strong>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+            <!-- MODAL FOOTER -->
+            <div class="modal-footer px-4 py-3" style="background: #ffffff; border-top: 1px solid #f4f5f7;">
+                <button type="button" class="btn fw-bold px-4" style="background: #f4f5f7; color: #525f7f; border-radius: 8px; font-size: 12px;" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn fw-bold px-4" onclick="window.print()" style="background: #0066ff; color: #ffffff; border-radius: 8px; font-size: 12px;">
+                    <i class="bi bi-printer me-1"></i> Print Slip
+                </button>
             </div>
+
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initialize DataTables
-        if (typeof $!== 'undefined') {$('.table-striped').DataTable({
-                "pageLength": 10,
-                "ordering": false,
-                "language": {
-                    "emptyTable": "There is currently no DATA on order list."
-                }
-            });
-        }
-
-        // Modal Fetch Logic
-        const viewModal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
-        const viewButtons = document.querySelectorAll('.btn-view-order');
-
-        viewButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const orderId = this.getAttribute('data-id');
-                
-                document.getElementById('modalLoading').style.display = 'block';
-                document.getElementById('modalContent').style.display = 'none';
-                viewModal.show();
-
-                fetch(`/ecdr/show/${orderId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.success) {
-                            document.getElementById('mdl_name').textContent = data.master.name;
-                            document.getElementById('mdl_mrn').textContent = data.master.mrn;
-                            document.getElementById('mdl_ward').textContent = data.master.ward;
-                            document.getElementById('mdl_protocol').textContent = data.master.protocol;
-                            document.getElementById('mdl_height').textContent = data.master.height;
-                            document.getElementById('mdl_weight').textContent = data.master.weight;
-                            document.getElementById('mdl_bsa').textContent = data.master.bsa;
-                            document.getElementById('mdl_remarks').textContent = data.master.nota;
-
-                            const cyclesList = document.getElementById('mdl_cycles');
-                            cyclesList.innerHTML = '';
-                            data.cycles.forEach(cycle => {
-                                cyclesList.innerHTML += `<li>Date Use: ${cycle.date_use} (${cycle.orderstatus})</li>`;
-                            });
-
-                            const drugsBody = document.getElementById('mdl_drugs');
-                            drugsBody.innerHTML = '';
-                            data.drugs.forEach(drug => {
-                                drugsBody.innerHTML += `<tr><td>${drug.drug_name}</td><td>${drug.dose}</td><td>${drug.diluent}</td><td>${drug.volume}</td></tr>`;
-                            });
-
-                            document.getElementById('modalLoading').style.display = 'none';
-                            document.getElementById('modalContent').style.display = 'block';
-                        } else {
-                            alert('Failed to load order details.');
-                            viewModal.hide();
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('Network error loading order.');
-                        viewModal.hide();
-                    });
-            });
-        });
-    });
-</script>

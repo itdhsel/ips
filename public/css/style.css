@@ -1,268 +1,8 @@
 /* ==========================================================================
-   Integrated Pharmacy System - Core Stylesheet
+   Integrated Pharmacy System - Legacy Utilities & Print Engine
    ========================================================================== */
 
-/* --- 1. Global Reset & App Shell Layout --- */
-html, body {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
-.main-content { 
-    width: 100%;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    overflow: hidden !important;
-    background-color: #f8f9fc;
-}
-
-.content-body {
-    width: 100%;
-    overflow-y: auto !important;
-}
-
-.top-header {
-    width: 100%;
-    background-color: #ffffff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    z-index: 90;
-}
-
-.main-footer {
-    width: 100%;
-    height: 52px !important;
-    box-sizing: border-box;
-    background-color: #112a46;
-    padding: 0 1rem;
-    text-align: center;
-    font-size: 0.85rem;
-    color: #ffffff;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    z-index: 80;
-}
-
-/* --- 2. Shrinkable & Collapsible Sidebar --- */
-#sidebar, .sidebar { 
-    width: 280px;
-    min-width: 280px;
-    height: 100vh !important; /* Locked to viewport height */
-    max-height: 100vh !important;
-    position: sticky !important;
-    top: 0 !important;
-    background: linear-gradient(180deg, #112a46 0%, #1a4a5e 50%, #101820 100%);
-    color: #ffffff;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    transition: width 0.25s ease-in-out, min-width 0.25s ease-in-out !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-}
-
-#sidebar .nav-link, .sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.7);
-    transition: all 0.2s ease;
-    border-left: 4px solid transparent;
-}
-
-#sidebar .nav-link:hover, .sidebar .nav-link:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(4px);
-    border-left: 4px solid #0dcaf0;
-}
-
-#sidebar .nav-link.active, .sidebar .nav-link.active {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-left: 4px solid #0dcaf0;
-    color: #ffffff;
-    font-weight: 600;
-}
-
-/* Custom Sleek Scrollbar for Inner Sidebar Nav */
-.custom-sidebar-scroll::-webkit-scrollbar {
-    width: 4px;
-}
-.custom-sidebar-scroll::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-}
-.custom-sidebar-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-
-/* Collapsed Sidebar State */
-#sidebar.collapsed {
-    width: 75px !important;
-    min-width: 75px !important;
-    max-width: 75px !important;
-    padding-left: 0.25rem !important;
-    padding-right: 0.25rem !important;
-    cursor: pointer;
-}
-
-#sidebar.collapsed .sidebar-text,
-#sidebar.collapsed .chevron-icon,
-#sidebar.collapsed .collapse,
-#sidebar.collapsed hr,
-#sidebar.collapsed .sidebar-header div {
-    display: none !important;
-}
-
-#sidebar.collapsed .nav-link {
-    justify-content: center !important;
-    text-align: center;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    display: flex;
-    align-items: center;
-}
-
-#sidebar.collapsed .nav-link svg {
-    margin-right: 0 !important;
-    width: 20px;
-    height: 20px;
-}
-
-/* Bottom Toggle Container */
-.sidebar-toggle-container {
-    height: 52px !important;            /* Fixed height matching main footer */
-    box-sizing: border-box;
-    background-color: #101820 !important;
-    flex-shrink: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 0.5rem !important;
-}
-
-.sidebar-toggle-btn {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    line-height: 1;
-    transition: all 0.2s ease;
-}
-
-.sidebar-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-}
-
-/* --- 3. Custom Tables & Status Badges --- */
-.custom-table th {
-    background-color: #e9ecef !important;
-    color: #000000;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 0.85rem;
-    white-space: nowrap;
-}
-
-.custom-table td {
-    text-align: center;
-    vertical-align: middle;
-}
-
-/* Workflow Status Colors */
-.status-received   { background-color: #ff8a93 !important; color: #000000 !important; }
-.status-processing { background-color: #ffb74d !important; color: #000000 !important; }
-.status-ready      { background-color: #aed581 !important; color: #000000 !important; }
-.status-collected  { background-color: #4dd0e1 !important; color: #000000 !important; }
-.status-completed  { background-color: #ba68c8 !important; color: #ffffff !important; }
-
-/* --- 4. Workflow Legend (Chevron Arrows) --- */
-.workflow-legend {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-    gap: 3px;
-    flex-wrap: wrap;
-}
-
-.legend-step {
-    padding: 10px 15px 10px 25px;
-    color: #000000;
-    font-weight: bold;
-    font-size: 0.75rem;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 130px;
-    clip-path: polygon(calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%, 0 0);
-}
-
-.legend-step:first-child {
-    padding-left: 15px;
-    clip-path: polygon(calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 0 50%, 0 0);
-}
-
-.legend-step:last-child {
-    clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0 100%, 15px 50%, 0 0);
-}
-
-/* --- 5. Legacy Table Styling --- */
-.legacy-table-header {
-    background-color: #d3d3d3;
-    color: #000000;
-    font-weight: bold;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    padding: 8px 12px;
-    border: 1px solid #c0c0c0;
-}
-
-.legacy-table {
-    font-size: 0.82rem;
-    border: 1px solid #b0b0b0 !important;
-}
-
-.legacy-table th {
-    background-color: #e0e0e0 !important;
-    color: #000000 !important;
-    font-weight: bold !important;
-    vertical-align: middle !important;
-    border: 1px solid #b0b0b0 !important;
-    padding: 6px 8px !important;
-}
-
-.legacy-table td {
-    vertical-align: middle !important;
-    border: 1px solid #d0d0d0 !important;
-    padding: 5px 6px !important;
-    color: #000000;
-}
-
-.legacy-remark-input {
-    background-color: #ffffcc !important;
-    border: 1px solid #a0a0a0;
-    font-size: 0.8rem;
-    padding: 2px 5px;
-}
-
-.legacy-select {
-    font-size: 0.8rem;
-    padding: 2px 4px;
-    border: 1px solid #a0a0a0;
-    background-color: #fdfdfd;
-}
-
-/* --- 6. Scroll To Top Button --- */
+/* --- Scroll To Top Button --- */
 #scrollTopBtn {
     display: none;
     position: fixed;
@@ -272,21 +12,21 @@ html, body {
     font-size: 20px;
     border: none;
     outline: none;
-    background-color: #206a6b;
+    background-color: #0066ff; /* Updated to match new theme */
     color: #ffffff;
     cursor: pointer;
     padding: 10px 16px;
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
 
 #scrollTopBtn:hover {
-    background-color: #112a46;
+    background-color: #172b4d;
     transform: translateY(-4px);
 }
 
-/* --- 7. Data-Only Print View Engine --- */
+/* --- Data-Only Print View Engine --- */
 @media print {
     /* Hide non-printable UI elements */
     #sidebar,
@@ -314,7 +54,6 @@ html, body {
     .content-body,
     .container-fluid {
         background: #ffffff !important;
-        background-color: #ffffff !important;
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
@@ -329,50 +68,23 @@ html, body {
     }
 
     /* Force Table Containers to Expand Across Multiple Pages */
-    .table-responsive {
+    .table-responsive, .table-scroll, .medi-table-container {
         overflow: visible !important;
         display: block !important;
         width: 100% !important;
-    }
-
-    .card {
+        max-height: none !important;
         border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-    }
-
-    .card-body {
-        padding: 0 !important;
-        overflow: visible !important;
-    }
-
-    /* Print Header Banner */
-    .legacy-table-header {
-        background-color: #d3d3d3 !important;
-        color: #000000 !important;
-        border: 1px solid #000000 !important;
-        font-size: 10pt !important;
-        font-weight: bold !important;
-        padding: 6px 10px !important;
-        text-transform: uppercase;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
     }
 
     /* Printable Table Formatting */
-    .custom-table,
-    .legacy-table {
+    .table, .medi-table {
         width: 100% !important;
         border-collapse: collapse !important;
         border: 1px solid #000000 !important;
         margin-top: 0 !important;
     }
 
-    .custom-table th,
-    .legacy-table th {
+    .table th, .medi-table th {
         background-color: #e0e0e0 !important;
         color: #000000 !important;
         border: 1px solid #000000 !important;
@@ -383,8 +95,7 @@ html, body {
         print-color-adjust: exact !important;
     }
 
-    .custom-table td,
-    .legacy-table td {
+    .table td, .medi-table td {
         border: 1px solid #000000 !important;
         padding: 4px 6px !important;
         font-size: 8pt !important;
@@ -394,18 +105,5 @@ html, body {
     /* Prevent rows from breaking awkwardly in half across page ends */
     tr {
         page-break-inside: avoid !important;
-    }
-
-    /* Printable Filter Summary */
-    .print-filter-summary {
-        display: block !important;
-        background-color: #f8f9fa !important;
-        border: 1px solid #000000 !important;
-        padding: 6px 10px !important;
-        margin-bottom: 8px !important;
-        font-size: 9pt !important;
-        color: #000000 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
     }
 }

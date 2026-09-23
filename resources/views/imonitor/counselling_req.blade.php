@@ -6,55 +6,65 @@
 @section('content')
 
     @if(session('success'))
-        <div class="alert alert-success shadow-sm fw-bold">
-            ✅ {{ session('success') }}
+        <div class="alert alert-success border-0 shadow-sm fw-bold mb-4" style="border-radius: 10px; background-color: #e6f9ed; color: #00b341;">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
         </div>
     @endif
     @if($errors->any())
-        <div class="alert alert-danger shadow-sm">
-            <ul class="mb-0">
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 10px; background-color: #ffeaea; color: #d32f2f;">
+            <ul class="mb-0 ps-3">
                 @foreach($errors->all() as $error) <li>{{$error }}</li> @endforeach
             </ul>
         </div>
     @endif
 
-    <!-- GENTLE REMINDER ALERT -->
-    <div class="alert alert-warning border-warning shadow-sm">
-        <h6 class="alert-heading fw-bold text-danger">⚠️ GENTLE REMINDER!!</h6>
-        <ul class="mb-0 small text-dark">
-            <li>Counselling referral after <strong>4:00 PM</strong> will be counselled on the next working day.</li>
-            <li>Counselling referral on <strong>Saturday & Sunday</strong> will be counselled on the next working day.</li>
-            <li>No Counselling done on public holidays. For urgent referrals, please call Pharmacy at <strong>2069/2140</strong>.</li>
+    <!-- GENTLE REMINDER CARD -->
+    <div class="medi-card p-4 mb-4" style="border-left: 4px solid #f57c00 !important; background: #fffcf8;">
+        <div class="d-flex align-items-center gap-2 mb-2" style="color: #f57c00;">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <h6 class="fw-bold mb-0">Counselling Schedule Reminders</h6>
+        </div>
+        <ul class="mb-0 small text-muted ps-4" style="line-height: 1.6;">
+            <li>Referrals submitted after <strong>4:00 PM</strong> will be counselled on the next working day.</li>
+            <li>Referrals on <strong>Saturday & Sunday</strong> will be counselled on the next working day.</li>
+            <li>No counselling on public holidays. For urgent referrals, contact Pharmacy at <strong>Ext. 2069 / 2140</strong>.</li>
         </ul>
     </div>
 
-    <!-- REQUEST FORM -->
-    <div class="card shadow border-0 rounded mt-4">
-        <div class="card-header bg-dark text-white fw-bold py-3">
-            PHARMACY COUNSELLING REQUEST FORM
+    <!-- MAIN REQUEST FORM -->
+    <div class="medi-card mb-4 overflow-hidden">
+        <div class="p-4 border-bottom d-flex align-items-center justify-content-between" style="background: #ffffff; border-color: #f4f5f7 !important;">
+            <div>
+                <h6 class="medi-table-title mb-1"><i class="bi bi-file-earmark-medical me-2 text-primary"></i>Pharmacy Counselling Request Form</h6>
+                <div style="font-size: 12px; color: #8898aa;">Complete the patient details and medication order below</div>
+            </div>
+            <span class="badge" style="background: #e3efff; color: #0066ff; font-weight: 600; padding: 6px 12px; border-radius: 6px;">New Referral</span>
         </div>
-        <div class="card-body bg-white p-4">
+
+        <div class="p-4 bg-white">
             <form action="{{ route('counselling.store') }}" method="POST" id="counsellingForm">
                 @csrf
                 <div class="row g-4">
                     
-                    <!-- MRN & Patient Name Swap -->
+                    <!-- PATIENT IDENTIFICATION -->
                     <div class="col-md-4">
-                        <label class="fw-bold mb-1">MRN <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">MRN <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" id="mrn_search" name="mrn" class="form-control bg-light text-uppercase" required>
-                            <button type="button" class="btn btn-outline-primary fw-bold px-3" id="btnSearchMrn" title="Search MRN">🔍</button>
+                            <input type="text" id="mrn_search" name="mrn" class="form-control medi-input text-uppercase border-end-0" placeholder="e.g. 123456" required>
+                            <button type="button" class="btn border-start-0" id="btnSearchMrn" style="background: #f8f9fa; border: 1px solid #e9ecef; color: #0066ff;" title="Search MRN">
+                                <i class="bi bi-search"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <label class="fw-bold mb-1">Patient Name <span class="text-danger">*</span></label>
-                        <input type="text" id="patient_name" name="patient_name" class="form-control bg-light text-uppercase" required>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Patient Name <span class="text-danger">*</span></label>
+                        <input type="text" id="patient_name" name="patient_name" class="form-control medi-input text-uppercase" placeholder="Full Patient Name" required>
                     </div>
 
-                    <!-- Ward/Unit & Bed No -->
+                    <!-- LOCATION DETAILS -->
                     <div class="col-md-6">
-                        <label class="fw-bold mb-1">Ward/Unit <span class="text-danger">*</span></label>
-                        <select name="ward" class="form-select bg-light" required>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Ward / Unit <span class="text-danger">*</span></label>
+                        <select name="ward" class="form-select medi-input" required>
                             <option value="">-- Select Ward --</option>
                             @php
                                 $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
@@ -65,20 +75,22 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="fw-bold mb-1">Bed No <span class="text-danger">*</span></label>
-                        <input type="text" name="bed" class="form-control bg-light" required>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Bed No <span class="text-danger">*</span></label>
+                        <input type="text" name="bed" class="form-control medi-input" placeholder="e.g. Bed 12A" required>
                     </div>
 
-                    <!-- Counselling Order Section -->
+                    <!-- MEDICATION ORDER BUILDER -->
                     <div class="col-12 mt-4">
-                        <div class="p-3 border rounded bg-light">
-                            <label class="fw-bold mb-3 text-dark">Counselling Order</label>
+                        <div class="p-3 border rounded-3" style="background: #f8f9fa; border-color: #e9ecef !important;">
+                            <label class="fw-bold mb-3 d-flex align-items-center gap-2" style="font-size: 13px; color: #172b4d;">
+                                <i class="bi bi-capsule text-primary"></i> Counselling Order
+                            </label>
                             
                             <div class="row g-2 align-items-end mb-3">
                                 <div class="col-md-6">
-                                    <label class="small text-muted mb-1">Select medication:</label>
-                                    <select id="medSelect" class="form-select border-secondary">
-                                        <option value="">Select Medication</option>
+                                    <label class="form-label mb-1" style="font-size: 11px; color: #8898aa;">Select Medication:</label>
+                                    <select id="medSelect" class="form-select medi-input">
+                                        <option value="">-- Choose Item --</option>
                                         <optgroup label="-- INHALER --">
                                             <option value="MDI Salbutamol 100mcg">MDI Salbutamol 100mcg</option>
                                             <option value="MDI Budesonide 200mcg">MDI Budesonide 200mcg</option>
@@ -127,54 +139,60 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="small text-muted mb-1">Dosage: <span class="text-danger">*</span> (Please include dosage unit)</label>
-                                    <input type="text" id="dosInput" class="form-control border-secondary">
+                                    <label class="form-label mb-1" style="font-size: 11px; color: #8898aa;">Dosage & Frequency: <span class="text-danger">*</span></label>
+                                    <input type="text" id="dosInput" class="form-control medi-input" placeholder="e.g. 2 puffs BD">
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-secondary w-100" onclick="addMedication()">Add Medication</button>
+                                    <button type="button" class="btn w-100 fw-bold" style="background: #e3efff; color: #0066ff; border-radius: 8px; height: 38px; font-size: 12px;" onclick="addMedication()">
+                                        <i class="bi bi-plus-lg me-1"></i> Add Item
+                                    </button>
                                 </div>
                             </div>
 
-                            <textarea name="consult_info" id="txtConsult" rows="4" class="form-control border-secondary" required></textarea>
+                            <textarea name="consult_info" id="txtConsult" rows="4" class="form-control medi-input" placeholder="Selected medications will accumulate here..." required></textarea>
                         </div>
                     </div>
 
-                    <!-- Medication Status -->
+                    <!-- USER STATUS & REQUESTS -->
                     <div class="col-md-12">
-                        <label class="fw-bold me-3">Medication Status: <span class="text-danger">*</span></label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="medstatus" value="First time user" required>
-                            <label class="form-check-label">First time user</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="medstatus" value="Re-assessment" required>
-                            <label class="form-check-label">Re-assessment</label>
+                        <label class="form-label fw-bold d-block mb-2" style="font-size: 12px; color: #525f7f;">Medication Status: <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="medstatus" id="medFirst" value="First time user" required style="cursor: pointer;">
+                                <label class="form-check-label fw-medium" for="medFirst" style="font-size: 13px; color: #32325d; cursor: pointer;">First time user</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="medstatus" id="medReassess" value="Re-assessment" required style="cursor: pointer;">
+                                <label class="form-check-label fw-medium" for="medReassess" style="font-size: 13px; color: #32325d; cursor: pointer;">Re-assessment</label>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Special Request -->
+                    <!-- SPECIAL REQUEST -->
                     <div class="col-12">
-                        <label class="fw-bold mb-1">Special Request (Optional)</label>
-                        <input type="text" name="special_request" class="form-control bg-light">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Special Request (Optional)</label>
+                        <input type="text" name="special_request" class="form-control medi-input" placeholder="Any specific requirements or notes for the pharmacist...">
                     </div>
 
-                    <!-- Requesting Doctor -->
+                    <!-- REQUESTING DOCTOR -->
                     <div class="col-md-6">
-                        <label class="fw-bold mb-1">Requesting Doctor <span class="text-danger">*</span></label>
-                        <input type="text" name="doc" class="form-control bg-light" value="{{ auth()->user()->name ?? auth()->user()->login_username }}" required readonly>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Requesting Doctor <span class="text-danger">*</span></label>
+                        <input type="text" name="doc" class="form-control medi-input fw-bold" style="background-color: #f4f5f7; color: #172b4d; cursor: not-allowed;" value="{{ auth()->user()->name ?? auth()->user()->login_username }}" required readonly>
                     </div>
 
                 </div>
                 
-                <div class="mt-3 small fw-bold text-muted">
-                    * indicate Mandatory fields.
+                <div class="mt-4 small fw-bold text-muted">
+                    <span class="text-danger">*</span> indicates mandatory fields.
                 </div>
 
-                <hr class="my-4">
-                
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success fw-bold px-4">Send Counselling Order</button>
-                    <button type="reset" class="btn btn-outline-secondary px-4">Reset</button>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top" style="border-color: #f4f5f7 !important;">
+                    <button type="submit" class="btn fw-bold px-4" style="background: #0066ff; color: #fff; border-radius: 8px; height: 42px; font-size: 13px;">
+                        <i class="bi bi-send me-1"></i> Send Counselling Order
+                    </button>
+                    <button type="reset" class="btn fw-bold px-4" style="background: #f4f5f7; color: #525f7f; border-radius: 8px; height: 42px; font-size: 13px;">
+                        Reset Form
+                    </button>
                 </div>
             </form>
         </div>
@@ -194,15 +212,15 @@
             return;
         }
 
-        let newText = med + (dos ? " " + dos : "") + "\n";
+        let newText = med + (dos ? " - " + dos : "") + "\n";
         textArea.value += newText;
 
-        // Reset inputs after adding
+        // Reset selector inputs
         document.getElementById('medSelect').value = "";
         document.getElementById('dosInput').value = "";
     }
 
-    // MRN Auto-Fill Search API
+    // MRN Search API Handler
     document.getElementById('btnSearchMrn')?.addEventListener('click', function() {
         let mrn = document.getElementById('mrn_search').value.trim();
         if (!mrn) {
@@ -210,10 +228,9 @@
             return;
         }
         
-        // Add a simple loading state to the button
         let btn = this;
-        let originalText = btn.innerHTML;
-        btn.innerHTML = '⏳';
+        let originalIcon = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         
         fetch(`/api/search-mrn?mrn=${encodeURIComponent(mrn)}`)
             .then(response => response.json())
@@ -226,7 +243,7 @@
             })
             .catch(error => console.error('Error fetching MRN:', error))
             .finally(() => {
-                btn.innerHTML = originalText;
+                btn.innerHTML = originalIcon;
             });
     });
 </script>

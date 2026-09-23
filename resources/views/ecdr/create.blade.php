@@ -1,45 +1,61 @@
 @extends('layouts.app')
 
+@section('title', 'Place eCDR Order')
+@section('page_title', 'Place Cytotoxic Drug Order')
+
 @section('content')
-<div class="container-fluid py-4">
-    <h3 class="mb-4 text-dark fw-bold">Place New eCDR Order</h3>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white text-uppercase fw-bold">
-            <i class="bi bi-prescription2 me-2"></i> New Cytotoxic Drug Reconstitution Order
+    <!-- SERVICE INSTRUCTION BANNER -->
+    <div class="medi-card p-4 mb-4" style="border-left: 4px solid #0066ff !important; background: #fffcf8;">
+        <div class="d-flex align-items-center gap-2 mb-2" style="color: #0066ff;">
+            <i class="bi bi-info-circle-fill fs-5"></i>
+            <h6 class="fw-bold mb-0">Cytotoxic Drug Reconstitution Service Guidelines</h6>
         </div>
-        <div class="card-body p-4">
-            <!-- Instruction Banner -->
-            <div class="alert border-info bg-light text-dark mb-4 shadow-sm" style="border-left: 5px solid #0dcaf0;">
-                <h6 class="fw-bold text-info text-uppercase mb-2">Cytotoxic Drug Reconstitution Service</h6>
-                <ul class="mb-0 small text-secondary">
-                    <li>Cytotoxic drugs will be reconstituted on <strong>Monday</strong> and <strong>Wednesday</strong>.</li>
-                    <li>Order form has to be completed at least one day before preparation day (before 3:00 pm).</li>
-                    <li>For any emergency request, please contact the pharmacist at <strong>ext 2043</strong> and the order form should be sent before 10:00 am.</li>
-                </ul>
-            </div>
+        <ul class="mb-0 small text-muted ps-4" style="line-height: 1.6;">
+            <li>Cytotoxic drugs are reconstituted on <strong>Monday</strong> and <strong>Wednesday</strong>.</li>
+            <li>Order forms must be completed at least <strong>one day before preparation</strong> (before 3:00 PM).</li>
+            <li>For emergency requests, contact Pharmacy at <strong>ext. 2043</strong> (order must be sent before 10:00 AM).</li>
+        </ul>
+    </div>
 
-            <!-- Main Form -->
+    <!-- MAIN ORDER FORM CONTAINER -->
+    <div class="medi-card mb-4 overflow-hidden">
+        <div class="p-4 border-bottom d-flex align-items-center justify-content-between" style="background: #ffffff; border-color: #f4f5f7 !important;">
+            <div>
+                <h6 class="medi-table-title mb-1"><i class="bi bi-prescription2 me-2 text-primary"></i>Cytotoxic Drug Reconstitution Order Form</h6>
+                <div style="font-size: 12px; color: #8898aa;">Complete patient demographics, treatment cycles, and medication dosage</div>
+            </div>
+            <span class="medi-badge badge-stage-2 px-3 py-2">eCDR Module</span>
+        </div>
+
+        <div class="p-4 bg-white">
             <form action="{{ route('ecdr.store') }}" method="POST">
                 @csrf
-                <!-- 1. Patient Demographics -->
-                <h6 class="fw-bold text-primary mb-3 border-bottom pb-2">1. Patient & Regimen Demographics</h6>
+                
+                <!-- 1. PATIENT & REGIMEN DEMOGRAPHICS -->
+                <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom" style="border-color: #f4f5f7 !important;">
+                    <span class="badge rounded-circle p-2" style="background: #e3efff; color: #0066ff; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px;">1</span>
+                    <h6 class="fw-bold mb-0" style="color: #172b4d; font-size: 14px;">Patient & Regimen Demographics</h6>
+                </div>
+
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
-                        <label class="fw-bold small mb-1">MRN <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">MRN <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" name="mrn" id="mrn" class="form-control" placeholder="ENTER MRN..." required>
-                            <button class="btn btn-outline-secondary" type="button" id="btnSearchMrn">🔍</button>
+                            <input type="text" name="mrn" id="mrn" class="form-control medi-input text-uppercase border-end-0" placeholder="Enter MRN..." required>
+                            <button type="button" class="btn border-start-0" id="btnSearchMrn" style="background: #f8f9fa; border: 1px solid #e9ecef; color: #0066ff;" title="Search MRN">
+                                <i class="bi bi-search"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="fw-bold small mb-1">Patient Name <span class="text-danger">*</span></label>
-                        <input type="text" name="patient_name" id="patient_name" class="form-control" placeholder="ENTER FULL NAME..." required>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Patient Name <span class="text-danger">*</span></label>
+                        <input type="text" name="patient_name" id="patient_name" class="form-control medi-input text-uppercase" placeholder="Full Patient Name" required>
                     </div>
                     <div class="col-md-3">
-                        <label class="fw-bold small mb-1">Ward <span class="text-danger">*</span></label>
-                        <select name="ward" id="ward" class="form-select" required>
-                            <option value="">-- Select Ward --</option>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Ward <span class="text-danger">*</span></label>
+                        <select name="ward" id="ward" class="form-select medi-input" required>
+                            <option value="">Select Ward</option>
                             @foreach($wards ?? [] as $w)
                                 <option value="{{ $w }}">{{ $w }}</option>
                             @endforeach
@@ -47,130 +63,152 @@
                     </div>
                     
                     <div class="col-md-2">
-                        <label class="fw-bold small mb-1">Age</label>
-                        <input type="text" name="age" id="age" class="form-control" placeholder="Years">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Age</label>
+                        <input type="text" name="age" id="age" class="form-control medi-input" placeholder="Years">
                     </div>
                     <div class="col-md-2">
-                        <label class="fw-bold small mb-1">Gender</label>
-                        <select name="sex" id="sex" class="form-select">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Gender</label>
+                        <select name="sex" id="sex" class="form-select medi-input">
                             <option value="">Select</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="fw-bold small mb-1">Weight (kg)</label>
-                        <input type="number" step="0.01" name="weight" id="ecdr_weight" class="form-control" placeholder="kg">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Weight (kg)</label>
+                        <input type="number" step="0.01" name="weight" id="ecdr_weight" class="form-control medi-input" placeholder="0.00">
                     </div>
                     <div class="col-md-3">
-                        <label class="fw-bold small mb-1">Height (cm)</label>
-                        <input type="number" step="0.01" name="height" id="ecdr_height" class="form-control" placeholder="cm">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Height (cm)</label>
+                        <input type="number" step="0.01" name="height" id="ecdr_height" class="form-control medi-input" placeholder="0.00">
                     </div>
                     <div class="col-md-3">
-                        <label class="fw-bold small mb-1">BSA (m²)</label>
-                        <input type="text" name="bsa" id="ecdr_bsa" class="form-control" placeholder="e.g. 1.73" readonly>
-                        <small class="text-muted" style="font-size: 0.7em;">Auto-calculated</small>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">BSA (m²)</label>
+                        <input type="text" name="bsa" id="ecdr_bsa" class="form-control medi-input fw-bold" placeholder="Auto-calculated" style="background-color: #f4f5f7;" readonly>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="fw-bold small mb-1">Diagnosis</label>
-                        <input type="text" name="diagnosis" id="diagnosis" class="form-control" placeholder="Diagnosis...">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Diagnosis</label>
+                        <input type="text" name="diagnosis" id="diagnosis" class="form-control medi-input" placeholder="Clinical diagnosis...">
                     </div>
                     <div class="col-md-6">
-                        <label class="fw-bold small mb-1">Protocol / Regimen</label>
-                        <input type="text" name="protocol" id="protocol" class="form-control" placeholder="e.g. FOLFOX / AC-T">
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Protocol / Regimen</label>
+                        <input type="text" name="protocol" id="protocol" class="form-control medi-input" placeholder="e.g. FOLFOX / AC-T">
                     </div>
                 </div>
 
-                <!-- 2. Multiple Cycles / Start Dates -->
-                <h6 class="fw-bold text-primary mb-3 border-bottom pb-2 mt-4">2. Order Details (Treatment Cycles)</h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-bordered table-sm" id="cycleTable">
-                        <thead class="table-light">
+                <!-- 2. TREATMENT CYCLES -->
+                <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-5" style="border-color: #f4f5f7 !important;">
+                    <span class="badge rounded-circle p-2" style="background: #e3efff; color: #0066ff; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px;">2</span>
+                    <h6 class="fw-bold mb-0" style="color: #172b4d; font-size: 14px;">Treatment Cycles</h6>
+                </div>
+
+                <div class="medi-table-container mb-3">
+                    <table class="table medi-table mb-0 w-100" id="cycleTable">
+                        <thead>
                             <tr>
-                                <th width="15%">Cycle</th>
+                                <th width="20%">Cycle #</th>
                                 <th>Start Date <span class="text-danger">*</span></th>
                                 <th width="10%" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="cycleBody">
                             <tr>
-                                <td class="align-middle fw-bold cycle-number">CYCLE 1</td>
-                                <td><input type="date" name="date_use[]" class="form-control" required></td>
+                                <td class="fw-bold align-middle cycle-number" style="color: #0066ff;">CYCLE 1</td>
+                                <td><input type="date" name="date_use[]" class="form-control medi-input" required></td>
                                 <td class="text-center align-middle">
-                                    <button type="button" class="btn btn-sm btn-danger btn-delete-cycle" disabled>Delete</button>
+                                    <button type="button" class="btn btn-sm btn-delete-cycle" style="color: #d32f2f; background: transparent;" disabled>
+                                        <i class="bi bi-trash fs-6"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-sm btn-secondary" id="btnAddCycle">+ Add Cycle</button>
+                </div>
+                <button type="button" class="btn fw-bold mb-4" style="background: #e3efff; color: #0066ff; border-radius: 8px; font-size: 12px;" id="btnAddCycle">
+                    <i class="bi bi-plus-lg me-1"></i> Add Treatment Cycle
+                </button>
+
+                <!-- 3. CYTOTOXIC DRUG DETAILS -->
+                <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4" style="border-color: #f4f5f7 !important;">
+                    <span class="badge rounded-circle p-2" style="background: #e3efff; color: #0066ff; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px;">3</span>
+                    <h6 class="fw-bold mb-0" style="color: #172b4d; font-size: 14px;">Cytotoxic Drug Details</h6>
                 </div>
 
-                <!-- 3. Multiple Drug Entries -->
-                <h6 class="fw-bold text-primary mb-3 border-bottom pb-2 mt-4">3. Cytotoxic Drug Details</h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-bordered table-sm" id="drugTable">
-                        <thead class="table-light">
+                <div class="medi-table-container mb-3">
+                    <table class="table medi-table mb-0 w-100" id="drugTable">
+                        <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th>Drug Name <span class="text-danger">*</span></th>
-                                <th>Dose <span class="text-danger">*</span></th>
-                                <th>Diluent</th>
-                                <th>Volume</th>
-                                <th width="10%" class="text-center">Action</th>
+                                <th width="30%">Drug Name <span class="text-danger">*</span></th>
+                                <th width="25%">Dose <span class="text-danger">*</span></th>
+                                <th width="20%">Diluent</th>
+                                <th width="15%">Volume</th>
+                                <th width="5%" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="drugBody">
                             <tr>
-                                <td class="align-middle fw-bold drug-number">1</td>
-                                <td><input type="text" name="drug_name[]" class="form-control" placeholder="E.G. PACLITAXEL" required></td>
-                                <td><input type="text" name="dose[]" class="form-control" placeholder="e.g. 175 mg/m2" required></td>
-                                <td><input type="text" name="diluent[]" class="form-control" placeholder="e.g. NS / D5%"></td>
-                                <td><input type="text" name="volume[]" class="form-control" placeholder="e.g. 500 mL"></td>
+                                <td class="fw-bold align-middle drug-number text-muted">1</td>
+                                <td><input type="text" name="drug_name[]" class="form-control medi-input text-uppercase" placeholder="e.g. PACLITAXEL" required></td>
+                                <td><input type="text" name="dose[]" class="form-control medi-input" placeholder="e.g. 175 mg/m²" required></td>
+                                <td><input type="text" name="diluent[]" class="form-control medi-input" placeholder="e.g. NS / D5%"></td>
+                                <td><input type="text" name="volume[]" class="form-control medi-input" placeholder="e.g. 500 mL"></td>
                                 <td class="text-center align-middle">
-                                    <button type="button" class="btn btn-sm btn-danger btn-delete-drug" disabled>Delete</button>
+                                    <button type="button" class="btn btn-sm btn-delete-drug" style="color: #d32f2f; background: transparent;" disabled>
+                                        <i class="bi bi-trash fs-6"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-sm btn-secondary" id="btnAddDrug">+ Add Drug</button>
                 </div>
+                <button type="button" class="btn fw-bold mb-4" style="background: #e3efff; color: #0066ff; border-radius: 8px; font-size: 12px;" id="btnAddDrug">
+                    <i class="bi bi-plus-lg me-1"></i> Add Drug Entry
+                </button>
 
-                <!-- Remarks -->
+                <!-- REMARKS -->
                 <div class="row g-3 mb-4">
                     <div class="col-12">
-                        <label class="fw-bold small mb-1">Remarks / Special Instructions</label>
-                        <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks..."></textarea>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Remarks / Special Instructions</label>
+                        <textarea name="remarks" class="form-control medi-input" rows="2" placeholder="Enter special preparation instructions or notes..."></textarea>
                     </div>
                 </div>
 
-                <!-- 4. Physician Details -->
-                <h6 class="fw-bold text-primary mb-3 border-bottom pb-2 mt-4">4. Physician Details</h6>
+                <!-- 4. PHYSICIAN DETAILS -->
+                <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4" style="border-color: #f4f5f7 !important;">
+                    <span class="badge rounded-circle p-2" style="background: #e3efff; color: #0066ff; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px;">4</span>
+                    <h6 class="fw-bold mb-0" style="color: #172b4d; font-size: 14px;">Physician Authorization</h6>
+                </div>
+
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
-                        <label class="fw-bold small mb-1">Physician</label>
-                        <input type="text" name="orderedby" class="form-control bg-light" value="{{ auth()->user()->name ?? 'N/A' }}" readonly>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Ordering Physician</label>
+                        <input type="text" name="orderedby" class="form-control medi-input fw-bold" style="background-color: #f4f5f7; color: #172b4d;" value="{{ auth()->user()->name ?? 'N/A' }}" readonly>
                     </div>
                     <div class="col-md-6">
-                        <label class="fw-bold small mb-1">Designation</label>
-                        <input type="text" name="orderbydetails" class="form-control bg-light" value="{{ auth()->user()->jawatan ?? auth()->user()->role ?? 'Pegawai Perubatan' }}" readonly>
+                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Designation / Role</label>
+                        <input type="text" name="orderbydetails" class="form-control medi-input fw-bold" style="background-color: #f4f5f7; color: #172b4d;" value="{{ auth()->user()->jawatan ?? auth()->user()->role ?? 'Pegawai Perubatan' }}" readonly>
                     </div>
                 </div>
 
-                <div class="text-end">
-                    <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
-                    <button type="submit" class="btn btn-success fw-bold">Submit CDR Order</button>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top" style="border-color: #f4f5f7 !important;">
+                    <button type="submit" class="btn fw-bold px-4" style="background: #0066ff; color: #fff; border-radius: 8px; height: 42px; font-size: 13px;">
+                        <i class="bi bi-check2-circle me-1"></i> Submit CDR Order
+                    </button>
+                    <button type="reset" class="btn fw-bold px-4" style="background: #f4f5f7; color: #525f7f; border-radius: 8px; height: 42px; font-size: 13px;">
+                        Reset Form
+                    </button>
                 </div>
             </form>
         </div>
     </div>
-</div>
+
 @endsection
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // --- MRN Search Fetch Logic ---
         const btnSearchMrn = document.getElementById('btnSearchMrn');
         const mrnInput = document.getElementById('mrn');
 
@@ -182,7 +220,7 @@
             }
 
             btnSearchMrn.disabled = true;
-            btnSearchMrn.innerHTML = '⏳';
+            btnSearchMrn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
             fetch(`/api/search-mrn/ecdr?mrn=${encodeURIComponent(mrn)}`)
                 .then(response => response.json())
@@ -219,11 +257,11 @@
                 })
                 .finally(() => {
                     btnSearchMrn.disabled = false;
-                    btnSearchMrn.innerHTML = '🔍';
+                    btnSearchMrn.innerHTML = '<i class="bi bi-search"></i>';
                 });
         });
 
-        // --- BSA Auto-Calculation ---
+        // BSA Calculation
         const weightInput = document.getElementById('ecdr_weight');
         const heightInput = document.getElementById('ecdr_height');
         const bsaInput = document.getElementById('ecdr_bsa');
@@ -241,7 +279,7 @@
         weightInput?.addEventListener('input', calculateBSA);
         heightInput?.addEventListener('input', calculateBSA);
 
-        // --- Dynamic Table Logic for Cycles ---
+        // Cycle Rows
         const cycleBody = document.getElementById('cycleBody');
         const btnAddCycle = document.getElementById('btnAddCycle');
 
@@ -249,10 +287,12 @@
             const rowCount = cycleBody.querySelectorAll('tr').length + 1;
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td class="align-middle fw-bold cycle-number">CYCLE ${rowCount}</td>
-                <td><input type="date" name="date_use[]" class="form-control" required></td>
+                <td class="fw-bold align-middle cycle-number" style="color: #0066ff;">CYCLE ${rowCount}</td>
+                <td><input type="date" name="date_use[]" class="form-control medi-input" required></td>
                 <td class="text-center align-middle">
-                    <button type="button" class="btn btn-sm btn-danger btn-delete-cycle">Delete</button>
+                    <button type="button" class="btn btn-sm btn-delete-cycle" style="color: #d32f2f; background: transparent;">
+                        <i class="bi bi-trash fs-6"></i>
+                    </button>
                 </td>
             `;
             cycleBody.appendChild(newRow);
@@ -260,7 +300,7 @@
         });
 
         cycleBody?.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-delete-cycle')) {
+            if (e.target.closest('.btn-delete-cycle')) {
                 e.target.closest('tr').remove();
                 updateCycleNumbers();
                 updateCycleButtons();
@@ -274,10 +314,13 @@
         }
         function updateCycleButtons() {
             const rows = cycleBody.querySelectorAll('tr');
-            rows.forEach(row => row.querySelector('.btn-delete-cycle').disabled = rows.length === 1);
+            rows.forEach(row => {
+                const btn = row.querySelector('.btn-delete-cycle');
+                if (btn) btn.disabled = rows.length === 1;
+            });
         }
 
-        // --- Dynamic Table Logic for Drugs ---
+        // Drug Rows
         const drugBody = document.getElementById('drugBody');
         const btnAddDrug = document.getElementById('btnAddDrug');
 
@@ -285,13 +328,15 @@
             const rowCount = drugBody.querySelectorAll('tr').length + 1;
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td class="align-middle fw-bold drug-number">${rowCount}</td>
-                <td><input type="text" name="drug_name[]" class="form-control" placeholder="E.G. PACLITAXEL" required></td>
-                <td><input type="text" name="dose[]" class="form-control" placeholder="e.g. 175 mg/m2" required></td>
-                <td><input type="text" name="diluent[]" class="form-control" placeholder="e.g. NS / D5%"></td>
-                <td><input type="text" name="volume[]" class="form-control" placeholder="e.g. 500 mL"></td>
+                <td class="fw-bold align-middle drug-number text-muted">${rowCount}</td>
+                <td><input type="text" name="drug_name[]" class="form-control medi-input text-uppercase" placeholder="e.g. PACLITAXEL" required></td>
+                <td><input type="text" name="dose[]" class="form-control medi-input" placeholder="e.g. 175 mg/m²" required></td>
+                <td><input type="text" name="diluent[]" class="form-control medi-input" placeholder="e.g. NS / D5%"></td>
+                <td><input type="text" name="volume[]" class="form-control medi-input" placeholder="e.g. 500 mL"></td>
                 <td class="text-center align-middle">
-                    <button type="button" class="btn btn-sm btn-danger btn-delete-drug">Delete</button>
+                    <button type="button" class="btn btn-sm btn-delete-drug" style="color: #d32f2f; background: transparent;">
+                        <i class="bi bi-trash fs-6"></i>
+                    </button>
                 </td>
             `;
             drugBody.appendChild(newRow);
@@ -299,7 +344,7 @@
         });
 
         drugBody?.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-delete-drug')) {
+            if (e.target.closest('.btn-delete-drug')) {
                 e.target.closest('tr').remove();
                 updateDrugNumbers();
                 updateDrugButtons();
@@ -313,7 +358,10 @@
         }
         function updateDrugButtons() {
             const rows = drugBody.querySelectorAll('tr');
-            rows.forEach(row => row.querySelector('.btn-delete-drug').disabled = rows.length === 1);
+            rows.forEach(row => {
+                const btn = row.querySelector('.btn-delete-drug');
+                if (btn) btn.disabled = rows.length === 1;
+            });
         }
     });
 </script>

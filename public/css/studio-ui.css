@@ -1,0 +1,374 @@
+/* =========================================
+   AIRY MEDICAL UI - REFERENCE THEME
+   ========================================= */
+
+   body { 
+    background-color: #f4f7fa; 
+    color: #32325d;
+}
+
+/* --- Split KPI Cards --- */
+.medi-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+.medi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04);
+}
+
+.medi-kpi-top {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.medi-kpi-info {
+    display: flex;
+    flex-direction: column;
+}
+.medi-kpi-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #525f7f;
+    margin-bottom: 6px;
+}
+.medi-kpi-val {
+    font-size: 28px;
+    font-weight: 700;
+    color: #172b4d;
+    line-height: 1;
+}
+.medi-kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.medi-kpi-bottom {
+    background: #ffffff;
+    padding: 15px 20px;
+    border-top: 1px solid rgba(0,0,0,0.04);
+    font-size: 12px;
+    color: #8898aa;
+}
+.medi-stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.medi-stat-row:last-child { margin-bottom: 0; }
+.medi-stat-val {
+    font-weight: 600;
+    color: #32325d;
+}
+
+/* --- Pastel Theme Colors --- */
+.theme-blue .medi-kpi-top { background-color: #e3efff; }
+.theme-blue .medi-kpi-icon { color: #0066ff; }
+
+.theme-green .medi-kpi-top { background-color: #e6f9ed; }
+.theme-green .medi-kpi-icon { color: #00b341; }
+
+.theme-purple .medi-kpi-top { background-color: #f2e9ff; }
+.theme-purple .medi-kpi-icon { color: #8e24aa; }
+
+.theme-red .medi-kpi-top { background-color: #ffeaea; }
+.theme-red .medi-kpi-icon { color: #d32f2f; }
+
+/* --- Modern Tables --- */
+.medi-table-container {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    padding: 0 10px;
+}
+.medi-table-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f4f5f7;
+}
+.medi-table-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #172b4d;
+    margin: 0;
+}
+.table-scroll { max-height: 400px; overflow-y: auto; }
+.medi-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #8898aa;
+    font-weight: 600;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+    background: #ffffff;
+    letter-spacing: 0.5px;
+}
+.medi-table td {
+    font-size: 13px;
+    color: #32325d;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f4f5f7;
+    vertical-align: middle;
+}
+.medi-table tr:last-child td { border-bottom: none; }
+
+/* --- Pill Badges & Buttons --- */
+.medi-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: inline-block;
+    text-align: center;
+}
+.badge-pending { background: #fff8e1; color: #f5b041; }
+.badge-completed { background: #e8f5e9; color: #2ecc71; }
+.badge-processing { background: #e3f2fd; color: #3498db; }
+.badge-cancelled { background: #ffeaea; color: #d32f2f; }
+
+.btn-medi-action {
+    background: #e3efff;
+    color: #0066ff;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+.btn-medi-action:hover {
+    background: #cce0ff;
+    color: #0052cc;
+}
+
+/* =========================================
+   MEDISPHERE LIGHT SIDEBAR (Matched to Image)
+   ========================================= */
+
+   #sidebar {
+    background-color: #ffffff;
+    border-right: 1px solid #f4f5f7;
+    box-shadow: 2px 0 20px rgba(0,0,0,0.02);
+    z-index: 1000;
+}
+
+/* Branding & Hospital Card */
+.sidebar-header { border-bottom: none !important; }
+.medi-logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #172b4d;
+}
+.hospital-card {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    margin: 0 15px 15px 15px;
+    background: #ffffff;
+}
+.hospital-card-icon {
+    background: #f4f5f7;
+    color: #525f7f;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-right: 12px;
+    font-size: 16px;
+}
+.hospital-title { font-size: 12px; font-weight: 700; color: #172b4d; margin-bottom: 2px; line-height: 1.2;}
+.hospital-subtitle { font-size: 10px; color: #adb5bd; line-height: 1.2;}
+
+/* Navigation Links */
+.sidebar-category {
+    font-size: 11px;
+    color: #adb5bd;
+    margin: 15px 20px 5px 20px;
+    font-weight: 500;
+}
+.medi-nav-link {
+    color: #525f7f;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 15px;
+    margin: 2px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.medi-nav-link i {
+    font-size: 16px;
+    margin-right: 12px;
+    color: #8898aa;
+}
+.medi-nav-link:hover {
+    background-color: #f8f9fa;
+    color: #172b4d;
+}
+
+/* Active State (Soft Blue Pill - ONLY FOR SELECTED PAGE) */
+.medi-nav-link.active {
+    background-color: #d1e4fb; 
+    color: #0066ff;
+    font-weight: 600;
+}
+.medi-nav-link.active i {
+    color: #0066ff;
+}
+
+/* Expanded Parent Menu (NO background pill, just darker text) */
+.medi-nav-link[aria-expanded="true"] {
+    color: #172b4d;
+    font-weight: 600;
+    background-color: transparent;
+}
+.medi-nav-link[aria-expanded="true"] i {
+    color: #172b4d;
+}
+
+/* Submenus */
+.medi-submenu {
+    margin-left: 30px;
+    margin-right: 15px;
+    margin-top: 2px;
+    margin-bottom: 10px;
+    border-left: 2px solid #f4f5f7;
+    padding-left: 10px;
+}
+.medi-sub-link {
+    color: #8898aa;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: block;
+    transition: 0.2s;
+}
+.medi-sub-link:hover { background: #f8f9fa; color: #525f7f; }
+.medi-sub-link.active { color: #0066ff; font-weight: 600; background: #f4f8ff; }
+
+/* =========================================
+   SIDEBAR TOGGLE & ICONS
+   ========================================= */
+
+/* Floating Toggle Button */
+.floating-toggle-btn {
+    position: absolute;
+    top: 24px;
+    right: -14px;
+    width: 28px;
+    height: 28px;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1050;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    color: #8898aa;
+    transition: all 0.2s ease;
+}
+.floating-toggle-btn:hover {
+    background: #f8f9fa;
+    color: #0066ff;
+    transform: scale(1.1);
+}
+
+/* Ensure Icons are Visible */
+.medi-nav-link i {
+    font-size: 1.1rem;
+    margin-right: 12px;
+    color: #adb5bd;
+    transition: color 0.2s;
+}
+.medi-nav-link.active i,
+.medi-nav-link[aria-expanded="true"] i,
+.medi-nav-link:hover i {
+    color: #0066ff;
+}
+
+/* Hide elements when collapsed */
+#sidebar.collapsed .sidebar-text,
+#sidebar.collapsed .hospital-card,
+#sidebar.collapsed .sidebar-category,
+#sidebar.collapsed .collapse-icon,
+#sidebar.collapsed .collapse { 
+    display: none !important;
+}
+
+#sidebar.collapsed {
+    width: 80px !important;
+    min-width: 80px !important;
+}
+#sidebar.collapsed .medi-nav-link {
+    justify-content: center;
+    padding: 12px 0;
+}
+#sidebar.collapsed .medi-nav-link i {
+    margin-right: 0;
+    font-size: 1.3rem;
+}
+
+/* =========================================
+   MODERN FORM INPUTS & LEGENDS
+   ========================================= */
+
+/* Minimalist Form Controls */
+.medi-input {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #32325d;
+    box-shadow: none !important;
+    background-color: #f8f9fa;
+}
+.medi-input:focus {
+    border-color: #0066ff;
+    background-color: #ffffff;
+}
+
+/* Modern Workflow Legend */
+.modern-legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.modern-legend-arrow { 
+    color: #adb5bd; 
+    font-size: 14px; 
+}
+
+/* =========================================
+   5-STAGE WORKFLOW BADGES
+   ========================================= */
+.badge-stage-1 { background: #ffeaea; color: #d32f2f; } /* Received (Red) */
+.badge-stage-2 { background: #fff3e0; color: #f57c00; } /* Processing (Orange) */
+.badge-stage-3 { background: #e6f9ed; color: #00b341; } /* Ready (Green) */
+.badge-stage-4 { background: #e0f7fa; color: #00acc1; } /* Collected (Cyan) */
+.badge-stage-5 { background: #f2e9ff; color: #8e24aa; } /* Completed (Purple) */
+.badge-stage-x { background: #f4f5f7; color: #525f7f; } /* Default/Cancelled */

@@ -10,47 +10,45 @@
     $isAdmin = auth()->check() && in_array(auth()->user()->role, ['admin', 'pharmacy']);
 @endphp
 
-<!-- FILTER CARD -->
-<div class="card shadow-sm mb-4 border-0 no-print">
-    <div class="card-body bg-white rounded">
-        <form method="GET" action="{{ route('monitor.index') }}" id="filterForm" class="row g-3 align-items-end m-0">
-            
-            <!-- Date Range -->
-            <div class="col-md-5">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label class="form-label fw-bold small text-primary mb-0">📅 Filter by Date Range</label>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="setDatePreset('today')">Today</button>
-                        <button type="button" class="btn btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="setDatePreset('yesterday')">Yesterday</button>
-                        <button type="button" class="btn btn-outline-primary py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="setDatePreset('all')">All</button>
-                    </div>
-                </div>
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light border-secondary">From</span>
-                    <input type="date" id="start_date" name="start_date" class="form-control border-secondary" value="{{ $startDate ?? request('start_date') }}">
-                    <span class="input-group-text bg-light border-secondary">To</span>
-                    <input type="date" id="end_date" name="end_date" class="form-control border-secondary" value="{{ $endDate ?? request('end_date') }}">
+<!-- FILTER SECTION -->
+<div class="medi-card p-4 mb-4 no-print">
+    <form method="GET" action="{{ route('monitor.index') }}" id="filterForm" class="row g-3 align-items-end m-0">
+        
+        <!-- Date Range -->
+        <div class="col-md-5">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label fw-bold mb-0" style="font-size: 12px; color: #525f7f;"><i class="bi bi-calendar3 me-1"></i> Date Range</label>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold border-0" style="font-size: 11px; color: #0066ff;" onclick="setDatePreset('today')">Today</button>
+                    <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold border-0" style="font-size: 11px; color: #0066ff;" onclick="setDatePreset('yesterday')">Yesterday</button>
+                    <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold border-0" style="font-size: 11px; color: #0066ff;" onclick="setDatePreset('all')">All Time</button>
                 </div>
             </div>
-
-            <!-- Ward -->
-            <div class="col-md-5">
-                <label class="form-label fw-bold small mb-1 text-primary">🏥 Filter by Ward</label>
-                <select name="ward" id="filter_ward" class="form-select form-select-sm border-secondary">
-                    <option value="ALL">-- All Wards --</option>
-                    @foreach ($wards as $w)
-                        <option value="{{ $w }}" {{ request('ward') == $w ? 'selected' : '' }}>{{ $w }}</option>
-                    @endforeach
-                </select>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0" style="border-color: #e9ecef; color: #8898aa;">From</span>
+                <input type="date" id="start_date" name="start_date" class="form-control medi-input border-start-0 ps-0" value="{{ $startDate ?? request('start_date') }}">
+                <span class="input-group-text bg-white border-end-0 border-start-0" style="border-color: #e9ecef; color: #8898aa;">To</span>
+                <input type="date" id="end_date" name="end_date" class="form-control medi-input border-start-0 ps-0" value="{{ $endDate ?? request('end_date') }}">
             </div>
+        </div>
 
-            <!-- Action Buttons -->
-            <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold w-100">Search</button>
-                <a href="{{ route('monitor.index') }}" class="btn btn-outline-secondary btn-sm px-3 w-100">Reset</a>
-            </div>
-        </form>
-    </div>
+        <!-- Ward -->
+        <div class="col-md-5">
+            <label class="form-label fw-bold mb-2" style="font-size: 12px; color: #525f7f;"><i class="bi bi-building me-1"></i> Ward Selection</label>
+            <select name="ward" id="filter_ward" class="form-select form-select-sm medi-input py-2">
+                <option value="ALL">All Wards</option>
+                @foreach ($wards  as $w)
+                    <option value="{{ $w }}" {{ request('ward') == $w ? 'selected' : '' }}>{{ $w }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn w-100 fw-bold" style="background: #0066ff; color: #fff; font-size: 13px; border-radius: 8px;">Search</button>
+            <a href="{{ route('monitor.index') }}" class="btn w-100 fw-bold" style="background: #f4f5f7; color: #525f7f; font-size: 13px; border-radius: 8px;">Reset</a>
+        </div>
+    </form>
 </div>
 
 <!-- PRINT SUMMARY (PRINT-ONLY) -->
@@ -66,219 +64,212 @@
     @endif
 </div>
 
-<!-- HEADER -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="fw-bold text-secondary mb-0">Data Results</h5>
-    <div class="d-flex gap-2 no-print">
-        <button onclick="window.print()" class="btn btn-secondary shadow-sm px-3 fw-bold">🖨️ Print Data</button>
-        @if($isAdmin)
-            <button class="btn btn-success shadow-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#addPatientModal">+ Add New Patient</button>
-        @endif
+<!-- MODERN WORKFLOW LEGEND -->
+<div class="modern-legend no-print mb-4">
+    <span class="medi-badge badge-stage-1">ORDER RECEIVED</span>
+    <i class="bi bi-chevron-right modern-legend-arrow"></i>
+    <span class="medi-badge badge-stage-2">PROCESSING</span>
+    <i class="bi bi-chevron-right modern-legend-arrow"></i>
+    <span class="medi-badge badge-stage-3">READY FOR COLLECTION</span>
+    <i class="bi bi-chevron-right modern-legend-arrow"></i>
+    <span class="medi-badge badge-stage-4">COLLECTED BY STAFF</span>
+    <i class="bi bi-chevron-right modern-legend-arrow"></i>
+    <span class="medi-badge badge-stage-5">COMPLETED</span>
+</div>
+
+<!-- DATA TABLE CONTAINER -->
+<div class="medi-table-container mb-4">
+    <div class="medi-table-header flex-wrap gap-3">
+        <div>
+            <h6 class="medi-table-title">Live Patient Status Queue</h6>
+            <div style="font-size: 11px; color: #8898aa; margin-top: 4px;">Last updated on {{ date('d M Y, H:i') }}</div>
+        </div>
+        <div class="d-flex gap-2 no-print">
+            <button onclick="window.print()" class="btn-medi-action" style="background: #f4f5f7; color: #525f7f;"><i class="bi bi-printer me-1"></i> Print</button>
+            @if($isAdmin)
+                <button class="btn-medi-action" data-bs-toggle="modal" data-bs-target="#addPatientModal"><i class="bi bi-plus-lg me-1"></i> Add Patient</button>
+            @endif
+        </div>
     </div>
-</div>
-
-<div class="text-center small fw-bold text-muted mb-2">
-    Last updated on {{ date('d-m-Y H:i:s') }}
-</div>
-
-<!-- TABLE -->
-<div class="card shadow-sm border-0 rounded mb-4">
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-bordered table-striped table-hover mb-0 align-middle custom-table">
+    
+    <div class="table-responsive">
+        <table class="table medi-table mb-0 w-100">
             <thead>
                 <tr>
-                    <th style="width: 50px;">NO</th>
-                    <th style="width: 100px;">DATE</th>
-                    <th style="width: 110px;">TIME</th>
-                    <th style="width: 70px;">WARD</th>
-                    <th>NAME</th>
-                    <th style="width: 110px;">MRN</th>
-                    <th style="width: 100px;">TOTAL</th>
-                    <th style="width: 100px;">QTY</th>
-                    <th style="width: 160px;">STATUS</th>
-                    <th style="width: 130px;">COLLECTED BY</th>
-                    <th>REMARKS</th>
+                    <th width="5%">#</th>
+                    <th width="15%">Time / Date</th>
+                    <th width="10%">Ward</th>
+                    <th width="25%">Patient Name</th>
+                    <th class="text-center" width="8%">Qty</th>
+                    <th class="text-center" width="22%">Status</th>
+                    <th width="10%">Collected By</th>
                     @if($isAdmin)
-                        <th style="width: 90px;" class="no-print">ACTION</th>
+                        <th class="text-center no-print" width="5%">Action</th>
                     @endif
                 </tr>
             </thead>
             <tbody>
                 @forelse ($patients as $patient)
+                    @php
+                        $badgeClass = 'badge-stage-x';
+                        if ($patient->status === 'ORDER RECEIVED')$badgeClass = 'badge-stage-1';
+                        elseif ($patient->status === 'PROCESSING')$badgeClass = 'badge-stage-2';
+                        elseif ($patient->status === 'READY FOR COLLECTION')$badgeClass = 'badge-stage-3';
+                        elseif (str_contains($patient->status, 'COLLECTED'))$badgeClass = 'badge-stage-4';
+                        elseif ($patient->status === 'COMPLETED')$badgeClass = 'badge-stage-5';
+                    @endphp
                     <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center">{{ date('d/m/Y', strtotime($patient->date)) }}</td>
-                        <td class="text-center">{{ $patient->time }}</td>
-                        <td class="text-center"><span class="badge bg-secondary">{{ $patient->ward }}</span></td>
-                        <td class="fw-bold text-uppercase text-start">{{ $patient->patient_name }}</td>
-                        <td class="text-center">{{ $patient->mrn }}</td>
-                        <td class="text-center">{{ $patient->total_item }}</td>
-                        <td class="text-center">{{ $patient->total_item2 }}</td>
-                        <td class="text-center">
-                            @if($patient->status === 'ORDER RECEIVED')
-                                <span class="badge status-received px-2 py-1 w-100">{{ $patient->status }}</span>
-                            @elseif($patient->status === 'PROCESSING')
-                                <span class="badge status-processing px-2 py-1 w-100">{{ $patient->status }}</span>
-                            @elseif($patient->status === 'READY FOR COLLECTION')
-                                <span class="badge status-ready px-2 py-1 w-100">{{ $patient->status }}</span>
-                            @elseif(
-                                    $patient->status === 'COLLECTED BY PHARMACIST OR PPK/SN'
-                                    ||
-                                    $patient->status === 'COLLECTED BY STAFF NURSE/PPK'
-                                    )
-                                <span class="badge status-collected px-2 py-1 w-100">{{ $patient->status }}</span>
-                            @elseif($patient->status === 'COMPLETED')
-                                <span class="badge status-completed px-2 py-1 w-100">{{ $patient->status }}</span>
-                            @elseif($patient->status === 'CANCELLED')
-                                <span class="badge bg-danger px-2 py-1 w-100">{{ $patient->status }}</span>
-                            @else
-                                <span class="badge bg-secondary px-2 py-1 w-100">{{ $patient->status }}</span>
+                        <td class="text-muted fw-bold">{{ $loop->iteration }}</td>
+                        <td>
+                            <div class="fw-bold" style="color: #172b4d;">{{ $patient->time }}</div>
+                            <div style="font-size: 11px; color: #8898aa;">{{ date('d M Y', strtotime($patient->date)) }}</div>
+                        </td>
+                        <td><span class="text-muted fw-bold">{{ $patient->ward }}</span></td>
+                        <td>
+                            <div class="fw-bold text-uppercase" style="color: #32325d;">{{ $patient->patient_name }}</div>
+                            <div style="font-size: 11px; color: #8898aa;">MRN: {{ $patient->mrn }}</div>
+                            @if($patient->remarks)
+                                <div style="font-size: 11px; color: #d32f2f; margin-top: 2px;"><i class="bi bi-exclamation-circle"></i> {{ $patient->remarks }}</div>
                             @endif
                         </td>
-                        <td class="text-center">{{ $patient->takenby ?: '-' }}</td>
-                        <td class="text-center">{{ $patient->remarks ?: '-' }}</td>
+                        <td class="text-center">
+                            <div class="fw-bold">{{ $patient->total_item2 }}</div>
+                            <div style="font-size: 11px; color: #8898aa;">({{ $patient->total_item }} items)</div>
+                        </td>
+                        <td class="text-center">
+                            <span class="medi-badge w-100 {{ $badgeClass }}">{{ $patient->status }}</span>
+                        </td>
+                        <td class="text-muted" style="font-size: 12px;">{{ $patient->takenby ?: '-' }}</td>
                         
                         @if($isAdmin)
                             <td class="text-center no-print">
-                                <button class="btn btn-sm btn-outline-primary px-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $patient->no }}">Edit</button>
+                                <button class="btn btn-sm" style="background: transparent; color: #8898aa;" data-bs-toggle="modal" data-bs-target="#editModal{{ $patient->no }}" title="Edit Order">
+                                    <i class="bi bi-pencil-square fs-6"></i>
+                                </button>
                             </td>
-
-                            <!-- EDIT MODAL INSIDE LOOP -->
-                            <div class="modal fade text-start" id="editModal{{ $patient->no }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <form method="POST" action="{{ route('monitor.update', $patient->no) }}">
-                                        @csrf
-                                        <div class="modal-content border-0 shadow">
-                                            <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title fw-bold">✏️ Edit Patient Order</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body bg-light">
-                                                <div class="mb-3">
-                                                    <label class="fw-bold small mb-1">Status</label>
-                                                    <select name="status" class="form-select fw-bold">
-                                                        <option value="ORDER RECEIVED" {{ $patient->status == 'ORDER RECEIVED' ? 'selected' : '' }}>ORDER RECEIVED</option>
-                                                        <option value="PROCESSING" {{ $patient->status == 'PROCESSING' ? 'selected' : '' }}>PROCESSING</option>
-                                                        <option value="READY FOR COLLECTION" {{ $patient->status == 'READY FOR COLLECTION' ? 'selected' : '' }}>READY FOR COLLECTION</option>
-                                                        <option value="COLLECTED BY PHARMACIST OR PPK/SN" {{ $patient->status == 'COLLECTED BY PHARMACIST OR PPK/SN' ? 'selected' : '' }}>COLLECTED BY PHARMACIST OR PPK/SN</option>
-                                                        <option value="COLLECTED BY STAFF NURSE/PPK" {{ $patient->status == 'COLLECTED BY STAFF NURSE/PPK' ? 'selected' : '' }}>COLLECTED BY STAFF NURSE/PPK</option>
-                                                        <option value="COMPLETED" {{ $patient->status == 'COMPLETED' ? 'selected' : '' }}>COMPLETED</option>
-                                                        <option value="CANCELLED" {{ $patient->status == 'CANCELLED' ? 'selected' : '' }}>CANCELLED</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="fw-bold small mb-1">Collected By</label>
-                                                    <input type="text" name="takenby" class="form-control" value="{{ $patient->takenby }}">
-                                                </div>
-                                                <div class="mb-1">
-                                                    <label class="fw-bold small mb-1">Remarks</label>
-                                                    <input type="text" name="remarks" class="form-control" value="{{ $patient->remarks }}">
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-primary fw-bold px-4">Update Order</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="12" class="text-center py-5 text-muted fw-bold">No data available</td>
+                        <td colspan="{{ $isAdmin ? 8 : 7 }}" class="text-center py-5">
+                            <i class="bi bi-inbox fs-1 text-muted opacity-50"></i>
+                            <div class="mt-2 fw-bold" style="color: #8898aa;">No data available for the selected filters.</div>
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+    
+    <!-- Pagination -->
     @if($patients->hasPages())
-        <div class="d-flex justify-content-center p-3 no-print">
+        <div class="d-flex justify-content-center p-3 border-top no-print" style="border-color: #f4f5f7 !important;">
             {{ $patients->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
 </div>
 
-<!-- WORKFLOW LEGEND -->
-<div class="workflow-legend no-print mb-4">
-    <div class="legend-step status-received">ORDER RECEIVED</div>
-    <div class="legend-step status-processing">PROCESSING</div>
-    <div class="legend-step status-ready">READY FOR COLLECTION</div>
-    <div class="legend-step status-collected">COLLECTED BY PHARMACIST OR PPK/SN</div>
-    <div class="legend-step status-completed">COMPLETED</div>
-</div>
+<!-- EDIT MODALS (MOVED OUTSIDE TABLE BODY) -->
+@if($isAdmin)
+    @foreach ($patients as $patient)
+        <div class="modal fade text-start" id="editModal{{ $patient->no }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form method="POST" action="{{ route('monitor.update', $patient->no) }}" class="w-100">
+                    @csrf
+                    <div class="modal-content border-0 shadow" style="border-radius: 16px; overflow: hidden;">
+                        <div class="modal-header" style="background: #e3efff; border-bottom: none; padding: 20px;">
+                            <h6 class="modal-title fw-bold" style="color: #0066ff;"><i class="bi bi-pencil-square me-2"></i>Edit Order: {{ $patient->mrn }}</h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4 bg-white">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Status</label>
+                                <select name="status" class="form-select medi-input fw-bold">
+                                    <option value="ORDER RECEIVED" {{ $patient->status == 'ORDER RECEIVED' ? 'selected' : '' }}>ORDER RECEIVED</option>
+                                    <option value="PROCESSING" {{ $patient->status == 'PROCESSING' ? 'selected' : '' }}>PROCESSING</option>
+                                    <option value="READY FOR COLLECTION" {{ $patient->status == 'READY FOR COLLECTION' ? 'selected' : '' }}>READY FOR COLLECTION</option>
+                                    <option value="COLLECTED BY PHARMACIST OR PPK/SN" {{ $patient->status == 'COLLECTED BY PHARMACIST OR PPK/SN' ? 'selected' : '' }}>COLLECTED BY PHARMACIST OR PPK/SN</option>
+                                    <option value="COLLECTED BY STAFF NURSE/PPK" {{ $patient->status == 'COLLECTED BY STAFF NURSE/PPK' ? 'selected' : '' }}>COLLECTED BY STAFF NURSE/PPK</option>
+                                    <option value="COMPLETED" {{ $patient->status == 'COMPLETED' ? 'selected' : '' }}>COMPLETED</option>
+                                    <option value="CANCELLED" {{ $patient->status == 'CANCELLED' ? 'selected' : '' }}>CANCELLED</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Collected By</label>
+                                <input type="text" name="takenby" class="form-control medi-input" value="{{ $patient->takenby }}">
+                            </div>
+                            <div class="mb-1">
+                                <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Remarks</label>
+                                <input type="text" name="remarks" class="form-control medi-input" value="{{ $patient->remarks }}">
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="border-top: 1px solid #f4f5f7;">
+                            <button type="button" class="btn fw-bold" style="color: #8898aa;" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn fw-bold px-4" style="background: #0066ff; color: #fff; border-radius: 8px;">Update Status</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endforeach
+@endif
 
-<!-- ADD PATIENT MODAL (OUTSIDE LOOP) -->
+<!-- ADD PATIENT MODAL -->
 @if($isAdmin)
 <div class="modal fade" id="addPatientModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <form method="POST" action="{{ route('monitor.store') }}">
             @csrf
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fw-bold">➕ NEW DATA ENTRY</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-content border-0 shadow" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-header" style="background: #e6f9ed; border-bottom: none; padding: 20px;">
+                    <h6 class="modal-title fw-bold" style="color: #00b341;"><i class="bi bi-person-plus-fill me-2"></i>New Data Entry</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body bg-light">
+                <div class="modal-body p-4 bg-white">
                     <div class="row g-3">
-                        
-                        <!-- Time Ordered -->
                         <div class="col-md-4">
-                            <label class="fw-bold small mb-1">Time ordered <span class="text-danger">*</span></label>
-                            <input type="time" name="time" class="form-control" value="{{ date('H:i') }}" required>
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Time ordered <span class="text-danger">*</span></label>
+                            <input type="time" name="time" class="form-control medi-input" value="{{ date('H:i') }}" required>
                         </div>
-
-                        <!-- Ward -->
                         <div class="col-md-4">
-                            <label class="fw-bold small mb-1">Ward <span class="text-danger">*</span></label>
-                            <select name="ward" class="form-select" required>
-                                <option value="">-- Select Ward --</option>
-                                @foreach (["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"] as $w)
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Ward <span class="text-danger">*</span></label>
+                            <select name="ward" class="form-select medi-input" required>
+                                <option value="">Select Ward</option>
+                                @foreach ($wards as $w)
                                     <option value="{{ $w }}">{{ $w }}</option>
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Status -->
                         <div class="col-md-4">
-                            <label class="fw-bold small mb-1">Status <span class="text-danger">*</span></label>
-                            <select name="status" class="form-select fw-bold" required>
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Initial Status <span class="text-danger">*</span></label>
+                            <select name="status" class="form-select medi-input fw-bold text-primary" required>
+                                <option value="ORDER RECEIVED">ORDER RECEIVED</option>
                                 <option value="PROCESSING" selected>PROCESSING</option>
                                 <option value="READY FOR COLLECTION">READY FOR COLLECTION</option>
-                                <option value="PENDING">PENDING</option>
                             </select>
                         </div>
-
-                        <!-- MRN -->
                         <div class="col-md-6">
-                            <label class="fw-bold small mb-1">MRN <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">MRN <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="text" name="mrn" id="add_mrn" class="form-control text-uppercase" required>
-                                <button type="button" class="btn btn-outline-secondary fw-bold" id="btnSearchMrnAdd">🔍</button>
+                                <input type="text" name="mrn" id="add_mrn" class="form-control medi-input text-uppercase border-end-0" required>
+                                <button type="button" class="btn border-start-0" id="btnSearchMrnAdd" style="background: #f8f9fa; border: 1px solid #e9ecef; color: #0066ff;"><i class="bi bi-search"></i></button>
                             </div>
                         </div>
-
-                        <!-- Patient Name -->
                         <div class="col-md-6">
-                            <label class="fw-bold small mb-1">Patient name <span class="text-danger">*</span></label>
-                            <input type="text" name="patient_name" id="add_patient_name" class="form-control text-uppercase" required>
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Patient name <span class="text-danger">*</span></label>
+                            <input type="text" name="patient_name" id="add_patient_name" class="form-control medi-input text-uppercase" required>
                         </div>
-                        
-                        <!-- Total items -->
                         <div class="col-md-6">
-                            <label class="fw-bold small mb-1">Total items <span class="text-danger">*</span></label>
-                            <select name="total_item" class="form-select" required>
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Total items <span class="text-danger">*</span></label>
+                            <select name="total_item" class="form-select medi-input" required>
                                 @for($i = 1; $i <= 20; $i++)
                                     <option value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
                         </div>
-                        
-                        <!-- Quantity supplied -->
                         <div class="col-md-6">
-                            <label class="fw-bold small mb-1">Quantity supplied <span class="text-danger">*</span></label>
-                            <select name="total_item2" class="form-select" required>
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Quantity supplied <span class="text-danger">*</span></label>
+                            <select name="total_item2" class="form-select medi-input" required>
                                 <option value="1 WEEK" selected>1 WEEK</option>
                                 <option value="2 WEEKS">2 WEEKS</option>
                                 <option value="1 MONTH">1 MONTH</option>
@@ -286,21 +277,15 @@
                                 <option value="FULL SUPPLY">FULL SUPPLY</option>
                             </select>
                         </div>
-                        
-                        <!-- Remarks -->
                         <div class="col-md-12">
-                            <label class="fw-bold small mb-1">Remarks</label>
-                            <input type="text" name="remarks" class="form-control text-uppercase">
+                            <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Remarks</label>
+                            <input type="text" name="remarks" class="form-control medi-input text-uppercase" placeholder="Optional notes...">
                         </div>
                     </div>
-                    
-                    <div class="mt-3 small fw-bold text-muted">
-                        * indicate Mandatory fields.
-                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success fw-bold px-4">Insert</button>
-                    <button type="reset" class="btn btn-outline-secondary fw-bold px-4">Reset</button>
+                <div class="modal-footer" style="border-top: 1px solid #f4f5f7;">
+                    <button type="reset" class="btn fw-bold" style="color: #8898aa;">Reset Fields</button>
+                    <button type="submit" class="btn fw-bold px-4" style="background: #00b341; color: #fff; border-radius: 8px;">Create Record</button>
                 </div>
             </div>
         </form>
@@ -311,7 +296,6 @@
 
 @push('scripts')
 <script>
-    // Rapid Date Preset Handlers
     function setDatePreset(type) {
         let startDateInput = document.getElementById('start_date');
         let endDateInput = document.getElementById('end_date');
@@ -342,13 +326,17 @@
         if(form) form.submit();
     }
 
-    // MRN Auto-Fill Search API
     document.getElementById('btnSearchMrnAdd')?.addEventListener('click', function() {
         let mrn = document.getElementById('add_mrn').value.trim();
         if (!mrn) {
             alert('Please enter an MRN to search.');
             return;
         }
+        
+        let btn = this;
+        let originalIcon = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        
         fetch(`/api/search-mrn?mrn=${encodeURIComponent(mrn)}`)
             .then(response => response.json())
             .then(data => {
@@ -358,7 +346,10 @@
                     alert('MRN not found in master list.');
                 }
             })
-            .catch(error => console.error('Error fetching MRN:', error));
+            .catch(error => console.error('Error fetching MRN:', error))
+            .finally(() => {
+                btn.innerHTML = originalIcon;
+            });
     });
 </script>
 @endpush

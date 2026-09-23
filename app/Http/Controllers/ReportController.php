@@ -131,6 +131,6 @@ class ReportController extends Controller
             }
         }
 
-        return view('reports.blade', compact('reportType', 'year', 'data', 'months'));
+        return view('imonitor.reports', compact('reportType', 'year', 'data', 'months'));
     }
 }
