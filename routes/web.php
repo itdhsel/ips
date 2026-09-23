@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MonitorController;
-use App\Http\Controllers\ConsultingController;
 use App\Http\Controllers\CollectionController;
-use App\Http\Controllers\SsoController;
+use App\Http\Controllers\ConsultingController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\EcdrController;
+use App\Http\Controllers\PatientApiController;
+use App\Http\Controllers\SsoController; // <-- Added this missing import!
 
 // 1. Catch unauthenticated users (The 'auth' middleware automatically redirects here)
 Route::get('/login', function () {
@@ -33,10 +37,11 @@ Route::middleware(['auth', 'single.session'])->group(function () {
     Route::post('/collection/update', [CollectionController::class, 'store'])->name('collection.store');
 
     // iMonitor: Reporting Submodule
-    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
-    // API Routes
-    Route::get('/api/search-mrn', [MonitorController::class, 'searchMrn'])->name('api.search.mrn');
+    // API Routes (Cleaned up duplicates)
+    Route::get('/api/search-mrn', [PatientApiController::class, 'searchImonitorMrn'])->name('api.search.mrn');
+    Route::get('/api/search-mrn/ecdr', [PatientApiController::class, 'searchEcdrMrn'])->name('api.search.mrn.ecdr');
 
     // Restrict Store & Update to Admin and Pharmacy staff
     Route::middleware(['role:admin,pharmacy'])->group(function () {
@@ -50,4 +55,9 @@ Route::middleware(['auth', 'single.session'])->group(function () {
         Route::get('/counselling/list', [ConsultingController::class, 'list'])->name('counselling.list');
     });
 
+    // eCDR (Cytotoxic Drug) Module Routes (Consolidated)
+    Route::get('/ecdr', [EcdrController::class, 'index'])->name('ecdr.index');
+    Route::post('/ecdr/store', [EcdrController::class, 'store'])->name('ecdr.store');
+    Route::post('/ecdr/update/{id}', [EcdrController::class, 'update'])->name('ecdr.update');
+    Route::post('/ecdr/cancel/{id}', [EcdrController::class, 'cancel'])->name('ecdr.cancel');
 });

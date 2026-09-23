@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 
 class MonitorController extends Controller
@@ -60,38 +61,53 @@ class MonitorController extends Controller
     // Insert new patient record
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'date' => 'required|date',
-            'time' => 'required',
-            'ward' => 'required|string|max:20',
-            'patient_name' => 'required|string|max:100',
-            'mrn' => 'required|string|max:50',
-            'total_item' => 'required|integer',
-            'total_item2' => 'required|integer',
-            'supply' => 'required|string|max:15',
-            'status' => 'required|string|max:35',
+        DB::table('patientlist')->insert([
+            'date' => date('Y-m-d'),
+            'time' => $request->input('time', date('H:i')) . ':00', 
+            'ward' => $request->input('ward'),
+            'patient_name' => $request->input('patient_name'),
+            'mrn' => $request->input('mrn'),
+            'total_item' => $request->input('total_item', 0),
+            
+            // Map the form input (e.g., "1 WEEK") to the correct 'supply' varchar column
+            'supply' => $request->input('total_item2', '-'), 
+            
+            // Provide a strict integer for total_item2 to satisfy the DB schema
+            'total_item2' => 0, 
+            
+            'status' => $request->input('status', 'PROCESSING'),
+            'remarks' => $request->input('remarks') ?? '-',
+            'takenby' => '-',
+            
+            // Provide default blank times to satisfy the strict schema requirements
+            'statusready' => '00:00:00',
+            'statuscollected' => '00:00:00',
         ]);
 
-        $validatedData['remarks'] = '';
-        $validatedData['takenby'] = '';
-        $validatedData['statusready'] = '00:00:00';
-        $validatedData['statuscollected'] = '00:00:00';
-
-        Patient::create($validatedData);
-
-        return redirect()->route('monitor.index')->with('success', 'Patient record added successfully.');
+        return redirect()->back()->with('success', 'Patient order added successfully.');
     }
 
     public function update(Request $request, $id)
     {
-        $patient = Patient::findOrFail($id);
+        $status = $request->input('status');
 
-        $patient->update([
-            'status'  => $request->input('status'),
-            // The ?? operator catches Laravel's null conversion and forces a dash instead
+        $updateData = [
+            'status'  => $status,
             'takenby' => $request->input('takenby') ?? '-',
             'remarks' => $request->input('remarks') ?? '-',
-        ]);
+        ];
+
+        // Dynamically capture the time when the status is updated to READY
+        if ($status === 'READY FOR COLLECTION') {
+            $updateData['statusready'] = date('H:i:s');
+        }
+
+        // Dynamically capture the time when the status is updated to COLLECTED
+        if ($status === 'COLLECTED BY PHARMACIST OR PPK/SN' || $status === 'COLLECTED BY STAFF NURSE/PPK') {
+            $updateData['statuscollected'] = date('H:i:s');
+        }
+
+        DB::table('patientlist')->where('no', $id)->update($updateData);
 
         return redirect()->back()->with('success', 'Patient order updated successfully.');
     }

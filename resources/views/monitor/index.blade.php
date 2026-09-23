@@ -217,48 +217,90 @@
             @csrf
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fw-bold">➕ Add New Patient Order</h5>
+                    <h5 class="modal-title fw-bold">➕ NEW DATA ENTRY</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body bg-light">
                     <div class="row g-3">
+                        
+                        <!-- Time Ordered -->
                         <div class="col-md-4">
+                            <label class="fw-bold small mb-1">Time ordered <span class="text-danger">*</span></label>
+                            <input type="time" name="time" class="form-control" value="{{ date('H:i') }}" required>
+                        </div>
+
+                        <!-- Ward -->
+                        <div class="col-md-4">
+                            <label class="fw-bold small mb-1">Ward <span class="text-danger">*</span></label>
+                            <select name="ward" class="form-select" required>
+                                <option value="">-- Select Ward --</option>
+                                @foreach (["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"] as $w)
+                                    <option value="{{ $w }}">{{ $w }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-4">
+                            <label class="fw-bold small mb-1">Status <span class="text-danger">*</span></label>
+                            <select name="status" class="form-select fw-bold" required>
+                                <option value="PROCESSING" selected>PROCESSING</option>
+                                <option value="READY FOR COLLECTION">READY FOR COLLECTION</option>
+                                <option value="PENDING">PENDING</option>
+                            </select>
+                        </div>
+
+                        <!-- MRN -->
+                        <div class="col-md-6">
                             <label class="fw-bold small mb-1">MRN <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="text" name="mrn" id="add_mrn" class="form-control text-uppercase" required>
                                 <button type="button" class="btn btn-outline-secondary fw-bold" id="btnSearchMrnAdd">🔍</button>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <label class="fw-bold small mb-1">Patient Name <span class="text-danger">*</span></label>
+
+                        <!-- Patient Name -->
+                        <div class="col-md-6">
+                            <label class="fw-bold small mb-1">Patient name <span class="text-danger">*</span></label>
                             <input type="text" name="patient_name" id="add_patient_name" class="form-control text-uppercase" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="fw-bold small mb-1">Ward <span class="text-danger">*</span></label>
-                            <select name="ward" class="form-select" required>
-                                <option value="">-- Select Ward --</option>
-                                @foreach ($wards as $w)
-                                    <option value="{{ $w }}">{{ $w }}</option>
-                                @endforeach
+                        
+                        <!-- Total items -->
+                        <div class="col-md-6">
+                            <label class="fw-bold small mb-1">Total items <span class="text-danger">*</span></label>
+                            <select name="total_item" class="form-select" required>
+                                @for($i = 1; $i <= 20; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="fw-bold small mb-1">Total Items <span class="text-danger">*</span></label>
-                            <input type="number" name="total_item" class="form-control" value="0" required min="0">
+                        
+                        <!-- Quantity supplied -->
+                        <div class="col-md-6">
+                            <label class="fw-bold small mb-1">Quantity supplied <span class="text-danger">*</span></label>
+                            <select name="total_item2" class="form-select" required>
+                                <option value="1 WEEK" selected>1 WEEK</option>
+                                <option value="2 WEEKS">2 WEEKS</option>
+                                <option value="1 MONTH">1 MONTH</option>
+                                <option value="2 MONTHS">2 MONTHS</option>
+                                <option value="FULL SUPPLY">FULL SUPPLY</option>
+                            </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="fw-bold small mb-1">Quantity Supplied</label>
-                            <input type="number" name="total_item2" class="form-control" value="0" min="0">
-                        </div>
+                        
+                        <!-- Remarks -->
                         <div class="col-md-12">
-                            <label class="fw-bold small mb-1">Remarks (Optional)</label>
-                            <input type="text" name="remarks" class="form-control">
+                            <label class="fw-bold small mb-1">Remarks</label>
+                            <input type="text" name="remarks" class="form-control text-uppercase">
                         </div>
+                    </div>
+                    
+                    <div class="mt-3 small fw-bold text-muted">
+                        * indicate Mandatory fields.
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success fw-bold px-4">Save Patient</button>
+                    <button type="submit" class="btn btn-success fw-bold px-4">Insert</button>
+                    <button type="reset" class="btn btn-outline-secondary fw-bold px-4">Reset</button>
                 </div>
             </div>
         </form>

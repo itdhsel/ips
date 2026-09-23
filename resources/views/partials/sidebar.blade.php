@@ -1,8 +1,8 @@
 <!-- SIDEBAR WITH FIXED HEADER & FOOTER TOGGLE -->
 <div class="sidebar bg-dark text-white d-flex flex-column vh-100 position-sticky top-0" id="sidebar" style="cursor: pointer; overflow: hidden;">
     
-<!-- 1. FIXED BRANDING HEADER (NO SCROLL) -->
-<div class="sidebar-header p-3 text-center border-bottom border-secondary flex-shrink-0">
+    <!-- 1. FIXED BRANDING HEADER (NO SCROLL) -->
+    <div class="sidebar-header p-3 text-center border-bottom border-secondary flex-shrink-0">
         <h5 class="m-0 fw-bold sidebar-title text-truncate d-flex align-items-center justify-content-center gap-1" title="Integrated Pharmacy System">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#0dcaf0" viewBox="0 0 16 16">
                 <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657L7.485 14.557A4 4 0 1 1 1.828 8.9Zm1.414 1.414a2 2 0 1 0 2.828 2.828l3.536-3.536-2.828-2.828-3.536 3.536Zm8.486-8.486a2 2 0 0 0-2.828 0L5.364 5.364l2.828 2.828 3.536-3.536a2 2 0 0 0 0-2.828Z"/>
@@ -84,7 +84,7 @@
 
             <!-- eCDR MODULE (ACCORDION) -->
             <li class="nav-item border-top border-secondary pt-2">
-                <a class="nav-link text-white-50 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseEcdr" role="button" aria-expanded="false" aria-controls="collapseEcdr">
+                <a class="nav-link d-flex justify-content-between align-items-center {{ request()->routeIs('ecdr.*') ? 'text-white fw-bold' : 'text-white-50' }}" data-bs-toggle="collapse" href="#collapseEcdr" role="button" aria-expanded="{{ request()->routeIs('ecdr.*') ? 'true' : 'false' }}" aria-controls="collapseEcdr">
                     <div class="d-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 sidebar-icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path fill-rule="evenodd" d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708z"/></svg>
                         <span class="sidebar-text">eCDR</span>
@@ -92,17 +92,30 @@
                     <span class="sidebar-text text-muted" style="font-size: 0.75rem;">▼</span>
                 </a>
                 
-                <div class="collapse" id="collapseEcdr">
+                <div class="collapse {{ request()->routeIs('ecdr.*') ? 'show' : '' }}" id="collapseEcdr">
                     <ul class="nav nav-pills flex-column mt-1 mb-2 gap-1" style="padding-left: 1.25rem;">
                         <li class="nav-item">
-                            <a href="#" class="nav-link text-white-50" style="padding: 0.4rem 1rem;" title="Cytotoxic Drug">
-                                <span class="sidebar-text small">Cytotoxic Drug</span>
+                            <a href="{{ route('ecdr.index') }}" class="nav-link {{ request()->routeIs('ecdr.*') ? 'active bg-primary text-white shadow-sm' : 'text-white-50' }}" style="padding: 0.4rem 1rem;" title="Ordering">
+                                <span class="sidebar-text small">Ordering</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
             
+            <!-- DRUG FORMULARY (STANDARDIZED MODULE ITEM) -->
+            <li class="nav-item border-top border-secondary pt-2">
+                <a href="https://hseldrugformulary.wistify.app/" target="_blank" class="nav-link text-white-50 d-flex justify-content-between align-items-center" title="Drug Formulary">
+                    <div class="d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2 sidebar-icon" viewBox="0 0 16 16">
+                            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.652-.629-1.757-.843-3.087-.711-1.21.12-2.434.48-3.413.882V2.828zM15 2.828c-.885-.37-2.154-.769-3.388-.893-1.33-.134-2.458.063-3.112.752v9.746c.652-.629 1.757-.843 3.087-.711 1.21.12 2.434.48 3.413.882V2.828zM0 1.95v11.331c0 .727.672 1.272 1.387 1.011 1.22-.446 2.623-.88 4.015-.733 1.282.135 2.277.676 2.598 1.157.321-.481 1.316-1.022 2.598-1.157 1.392-.147 2.795.287 4.015.733.715.261 1.387-.284 1.387-1.011V1.95c0-.776-.723-1.334-1.467-1.115-1.284.38-2.671.748-4.033.612-1.08-.108-1.921-.527-2.498-.982A.508.508 0 0 0 8 0a.508.508 0 0 0-.498.465c-.577.455-1.418.874-2.498.982-1.362.136-2.749-.232-4.033-.612C.723.616 0 1.174 0 1.95z"/>
+                        </svg>
+                        <span class="sidebar-text">Drug Formulary</span>
+                    </div>
+                    <span class="sidebar-text text-muted" style="font-size: 0.75rem;">↗</span>
+                </a>
+            </li>
+
         </ul>
     </div>
     
