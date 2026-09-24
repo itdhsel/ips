@@ -10,45 +10,70 @@
     $isAdmin = auth()->check() && in_array(auth()->user()->role, ['admin', 'pharmacy']);
 @endphp
 
-<!-- FILTER SECTION -->
-<div class="medi-card p-4 mb-4 no-print">
-    <form method="GET" action="{{ route('monitor.index') }}" id="filterForm" class="row g-3 align-items-end m-0">
-        
-        <!-- Date Range -->
-        <div class="col-md-5">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label fw-bold mb-0" style="font-size: 12px; color: #525f7f;"><i class="bi bi-calendar3 me-1"></i> Date Range</label>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold border-0" style="font-size: 11px; color: #0066ff;" onclick="setDatePreset('today')">Today</button>
-                    <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold border-0" style="font-size: 11px; color: #0066ff;" onclick="setDatePreset('yesterday')">Yesterday</button>
-                    <button type="button" class="btn btn-outline-secondary py-0 px-2 fw-bold border-0" style="font-size: 11px; color: #0066ff;" onclick="setDatePreset('all')">All Time</button>
+<!-- STANDARDIZED SEARCH BAR -->
+<div class="medi-card p-3 mb-4 shadow-sm" style="background: #ffffff;">
+        <form action="{{ url()->current() }}" method="GET" id="filterForm">
+            <div class="row g-3 align-items-end">
+                
+                <!-- 1. MRN Number -->
+                <div class="col-lg-2">
+                    <label class="form-label fw-bold mb-1" style="font-size: 11px; color: #525f7f;">MRN Number</label>
+                    <input type="text" name="mrn" class="form-control medi-input text-uppercase" placeholder="e.g. 123456" value="{{ request('mrn') }}">
                 </div>
-            </div>
-            <div class="input-group input-group-sm">
-                <span class="input-group-text bg-white border-end-0" style="border-color: #e9ecef; color: #8898aa;">From</span>
-                <input type="date" id="start_date" name="start_date" class="form-control medi-input border-start-0 ps-0" value="{{ $startDate ?? request('start_date') }}">
-                <span class="input-group-text bg-white border-end-0 border-start-0" style="border-color: #e9ecef; color: #8898aa;">To</span>
-                <input type="date" id="end_date" name="end_date" class="form-control medi-input border-start-0 ps-0" value="{{ $endDate ?? request('end_date') }}">
-            </div>
-        </div>
 
-        <!-- Ward -->
-        <div class="col-md-5">
-            <label class="form-label fw-bold mb-2" style="font-size: 12px; color: #525f7f;"><i class="bi bi-building me-1"></i> Ward Selection</label>
-            <select name="ward" id="filter_ward" class="form-select form-select-sm medi-input py-2">
-                <option value="ALL">All Wards</option>
-                @foreach ($wards  as $w)
-                    <option value="{{ $w }}" {{ request('ward') == $w ? 'selected' : '' }}>{{ $w }}</option>
-                @endforeach
-            </select>
-        </div>
+                <!-- 2. Patient Name -->
+                <div class="col-lg-2">
+                    <label class="form-label fw-bold mb-1" style="font-size: 11px; color: #525f7f;">Patient Name</label>
+                    <input type="text" name="name" class="form-control medi-input text-uppercase" placeholder="Search Name..." value="{{ request('name') }}">
+                </div>
 
-        <!-- Action Buttons -->
-        <div class="col-md-2 d-flex gap-2">
-            <button type="submit" class="btn w-100 fw-bold" style="background: #0066ff; color: #fff; font-size: 13px; border-radius: 8px;">Search</button>
-            <a href="{{ route('monitor.index') }}" class="btn w-100 fw-bold" style="background: #f4f5f7; color: #525f7f; font-size: 13px; border-radius: 8px;">Reset</a>
-        </div>
-    </form>
+                <!-- 3. Ward -->
+                <div class="col-lg-2">
+                    <label class="form-label fw-bold mb-1" style="font-size: 11px; color: #525f7f;">Ward</label>
+                    <select name="ward" id="filter_ward" class="form-select medi-input">
+                        <option value="ALL">-- All Wards --</option>
+                        @php
+                            $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
+                        @endphp
+                        @foreach ($wards as $w)
+                            <option value="{{ $w }}" {{ request('ward') == $w ? 'selected' : '' }}>{{ $w }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- 4. Date Range -->
+                <div class="col-lg-4">
+                    <div class="d-flex justify-content-between align-items-end mb-1">
+                        <label class="form-label fw-bold mb-0" style="font-size: 11px; color: #525f7f;">
+                            <i class="bi bi-calendar3 me-1"></i> Date Range
+                        </label>
+                        <div style="font-size: 11px; font-weight: 600;">
+                            <a href="javascript:void(0)" onclick="setDatePreset('today')" class="text-decoration-none me-2" style="color: #0066ff;">Today</a>
+                            <a href="javascript:void(0)" onclick="setDatePreset('yesterday')" class="text-decoration-none me-2" style="color: #0066ff;">Yesterday</a>
+                            <a href="javascript:void(0)" onclick="setDatePreset('all')" class="text-decoration-none" style="color: #0066ff;">All Time</a>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted border-end-0" style="font-size: 12px; padding-right: 8px;">From</span>
+                        <input type="date" id="start_date" name="start_date" class="form-control medi-input border-start-0 px-1" value="{{ request('start_date') }}">
+                        
+                        <span class="input-group-text bg-white text-muted border-start-0 border-end-0" style="font-size: 12px; padding-left: 8px; padding-right: 8px;">To</span>
+                        <input type="date" id="end_date" name="end_date" class="form-control medi-input border-start-0 px-1" value="{{ request('end_date') }}">
+                    </div>
+                </div>
+
+                <!-- 5. Action Buttons -->
+                <div class="col-lg-2 d-flex gap-2">
+                    <button type="submit" class="btn w-100 fw-bold shadow-sm" style="background: #0066ff; color: #fff; border-radius: 8px; height: 38px; font-size: 12px;">
+                        <i class="bi bi-search me-1"></i> Filter
+                    </button>
+                    <a href="{{ url()->current() }}" class="btn fw-bold px-3 d-flex align-items-center justify-content-center shadow-sm" style="background: #f4f5f7; color: #525f7f; border-radius: 8px; height: 38px;" title="Clear Filters">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+
+            </div>
+        </form>
 </div>
 
 <!-- PRINT SUMMARY (PRINT-ONLY) -->
@@ -86,9 +111,6 @@
         </div>
         <div class="d-flex gap-2 no-print">
             <button onclick="window.print()" class="btn-medi-action" style="background: #f4f5f7; color: #525f7f;"><i class="bi bi-printer me-1"></i> Print</button>
-            @if($isAdmin)
-                <button class="btn-medi-action" data-bs-toggle="modal" data-bs-target="#addPatientModal"><i class="bi bi-plus-lg me-1"></i> Add Patient</button>
-            @endif
         </div>
     </div>
     
@@ -132,9 +154,13 @@
                                 <div style="font-size: 11px; color: #d32f2f; margin-top: 2px;"><i class="bi bi-exclamation-circle"></i> {{ $patient->remarks }}</div>
                             @endif
                         </td>
-                        <td class="text-center">
-                            <div class="fw-bold">{{ $patient->total_item2 }}</div>
-                            <div style="font-size: 11px; color: #8898aa;">({{ $patient->total_item }} items)</div>
+                        <td class="text-center align-middle">
+                            <div class="fw-bold" style="color: #172b4d;">
+                                {{ (!empty($patient->total_item2) && $patient->total_item2 !== '0') ? $patient->total_item2 : $patient->total_item . ' ITEMS' }}
+                            </div>
+                            @if(!empty($patient->total_item2) && $patient->total_item2 !== '0')
+                                <div style="font-size: 11px; color: #8898aa;">({{ $patient->total_item }} items)</div>
+                            @endif
                         </td>
                         <td class="text-center">
                             <span class="medi-badge w-100 {{ $badgeClass }}">{{ $patient->status }}</span>

@@ -44,7 +44,7 @@
             @endphp
 
             <!-- CATEGORY 1 -->
-            <div class="sidebar-category">Outpatient Management</div>
+            <div class="sidebar-category">Discharge Medications</div>
             <li class="nav-item">
                 <a class="medi-nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseMonitor" role="button" aria-expanded="{{ $isMonitorActive ? 'true' : 'false' }}">
                     <div class="d-flex align-items-center">
@@ -56,14 +56,20 @@
                 
                 <div class="collapse {{ $isMonitorActive ? 'show' : '' }}" id="collapseMonitor">
                     <div class="medi-submenu flex-column d-flex">
-                        <a href="{{ route('monitor.index') }}" class="medi-sub-link {{ request()->routeIs('monitor.index') ? 'active' : '' }}">Status Queue</a>
-                        <a href="{{ route('collection.index') }}" class="medi-sub-link {{ request()->routeIs('collection.index') ? 'active' : '' }}">Collection</a>
-                        <a href="{{ route('counselling.index') }}" class="medi-sub-link {{ request()->routeIs('counselling.index') ? 'active' : '' }}">Counselling Req</a>
-                        
+                            
                         @if(auth()->check() && auth()->user()->role === 'admin')
-                            <a href="{{ route('counselling.list') }}" class="medi-sub-link {{ request()->routeIs('counselling.list') ? 'active' : '' }}">Counselling List 🔒</a>
-                            <a href="{{ route('reports.index') }}" class="medi-sub-link {{ request()->routeIs('reports.index') ? 'active' : '' }}">Reporting 🔒</a>
+                        <a href="{{ route('monitor.create') }}" class="medi-sub-link {{ request()->routeIs('monitor.create') ? 'active' : '' }}">New Order</a>
                         @endif
+                            
+                        <a href="{{ route('counselling.index') }}" class="medi-sub-link {{ request()->routeIs('counselling.index') ? 'active' : '' }}">New Counselling</a>
+                        <a href="{{ route('monitor.index') }}" class="medi-sub-link {{ request()->routeIs('monitor.index') ? 'active' : '' }}">Order Status</a>
+                        <a href="{{ route('collection.index') }}" class="medi-sub-link {{ request()->routeIs('collection.index') ? 'active' : '' }}">Collection</a>
+                            
+                        @if(auth()->check() && auth()->user()->role === 'admin')
+                        <a href="{{ route('counselling.list') }}" class="medi-sub-link {{ request()->routeIs('counselling.list') ? 'active' : '' }}">Counselling List</a>
+                        <a href="{{ route('reports.index') }}" class="medi-sub-link {{ request()->routeIs('reports.index') ? 'active' : '' }}">Reporting</a>
+                        @endif
+                            
                     </div>
                 </div>
             </li>

@@ -10,30 +10,27 @@ class PatientApiController extends Controller
 {
     public function searchImonitorMrn(Request $request)
     {
-        $mrn = trim($request->query('mrn'));
-
+        $mrn = $request->query('mrn');
+        
         if (!$mrn) {
-            return response()->json(['success' => false, 'message' => 'MRN is required.']);
+            return response()->json(['success' => false]);
         }
 
-        if (Schema::hasTable('patientlist')) {
-            $record = DB::table('patientlist')
-                ->where('mrn', $mrn)
-                ->orderBy('no', 'desc')
-                ->first();
+        // Explicitly target the 'imonitor' DB connection and 'patientlist' table
+        $patient = \Illuminate\Support\Facades\DB::connection('imonitor')
+            ->table('patientlist')
+            ->where('mrn', $mrn)
+            ->orderBy('date', 'desc') // Ensures it pulls the most recently recorded name
+            ->first();
 
-            if ($record) {
-                return response()->json([
-                    'success' => true,
-                    'patient' => [
-                        'patient_name' => $record->patient_name ?? '',
-                        'ward'         => $record->ward ?? '',
-                    ]
-                ]);
-            }
+        if ($patient) {
+            return response()->json([
+                'success' => true, 
+                'patient_name' => $patient->patient_name 
+            ]);
         }
 
-        return response()->json(['success' => false, 'message' => 'No iMonitor record found for this MRN.']);
+        return response()->json(['success' => false]);
     }
 
     public function searchEcdrMrn(Request $request)

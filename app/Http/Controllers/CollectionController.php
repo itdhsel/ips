@@ -13,8 +13,8 @@ class CollectionController extends Controller
         
         $query = Patient::query();
 
-        // 1. Initial load defaults to today. If user submits blank dates (e.g. clicks "All"), skip date filter.
-        if (!$request->has('start_date')) {
+        // 1. Date Range Logic
+        if (!$request->has('start_date') && !$request->has('end_date')) {
             $query->where('date', date('Y-m-d'));
         } else {
             if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -26,12 +26,22 @@ class CollectionController extends Controller
             }
         }
 
-        // 2. Apply Ward Dropdown Filter (Ignore "ALL" string)
+        // 2. MRN Logic (Standardized)
+        if ($request->filled('mrn')) {
+            $query->where('mrn', 'like', '%' . $request->mrn . '%');
+        }
+
+        // 3. Name Logic (Standardized)
+        if ($request->filled('name')) {
+            $query->where('patient_name', 'like', '%' . $request->name . '%');
+        }
+
+        // 4. Apply Ward Dropdown Filter (Ignore "ALL" string)
         if ($request->filled('ward') && $request->ward !== 'ALL') {
             $query->where('ward', $request->ward);
         }
 
-        // 3. Limit to 50 items per page and preserve query strings
+        // 5. Limit to 50 items per page and preserve query strings
         $patients = $query->orderBy('date', 'desc')->orderBy('time', 'desc')->paginate(50)->withQueryString();
 
         // Pass clean variables back to the view

@@ -29,19 +29,20 @@ class DashboardController extends Controller
             ->limit(15)
             ->get();
 
-        // 3. Cytotoxic (eCDR) - 5 Workflow Stages
+        // 3. Cytotoxic (eCDR) - 5 Workflow Stages (NOW FILTERED BY TODAY)
         $ecdrKpi = [
-            'total'     => DB::connection('ecdr')->table('cdr_orders')->count(), // Overall volume
-            'received'  => DB::connection('ecdr')->table('cdr_orders')->where('orderstatus', 'ORDER RECEIVED')->count(),
-            'preparing' => DB::connection('ecdr')->table('cdr_orders')->where('orderstatus', 'PREPARATION')->count(),
-            'ready'     => DB::connection('ecdr')->table('cdr_orders')->where('orderstatus', 'READY')->count(),
-            'dispensed' => DB::connection('ecdr')->table('cdr_orders')->where('orderstatus', 'DISPENSED')->count(),
+            'total'     => DB::connection('ecdr')->table('cdr_orders')->where('date_use', $today)->count(),
+            'received'  => DB::connection('ecdr')->table('cdr_orders')->where('date_use', $today)->where('orderstatus', 'ORDER RECEIVED')->count(),
+            'preparing' => DB::connection('ecdr')->table('cdr_orders')->where('date_use', $today)->where('orderstatus', 'PREPARATION')->count(),
+            'ready'     => DB::connection('ecdr')->table('cdr_orders')->where('date_use', $today)->where('orderstatus', 'READY')->count(),
+            'dispensed' => DB::connection('ecdr')->table('cdr_orders')->where('date_use', $today)->where('orderstatus', 'DISPENSED')->count(),
         ];
 
-        // 4. Cytotoxic (eCDR) Active Queue
+        // 4. Cytotoxic (eCDR) Active Queue (NOW FILTERED BY TODAY)
         $ecdrQueue = DB::connection('ecdr')->table('cdr')
             ->join('cdr_orders', 'cdr.cdr_id', '=', 'cdr_orders.order_id')
             ->select('cdr.name as patient_name', 'cdr.ward', 'cdr_orders.date_use', 'cdr_orders.orderstatus as status')
+            ->where('cdr_orders.date_use', $today) // Added Date Filter
             ->whereNotIn('cdr_orders.orderstatus', ['DISPENSED', 'CANCELLED'])
             ->orderBy('cdr_orders.date_use', 'asc')
             ->limit(15)

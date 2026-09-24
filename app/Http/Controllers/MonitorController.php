@@ -8,12 +8,11 @@ use App\Models\Patient;
 
 class MonitorController extends Controller
 {
-    // 1. NEW: Live Corporate Dashboard
+    // 1. NEW: Live Corporate Dashboard (Kept for fallback, though we use DashboardController now)
     public function dashboard()
     {
         $today = date('Y-m-d');
         
-        // Calculate KPI Metrics for today
         $kpi = [
             'total' => Patient::where('date', $today)->count(),
             'processing' => Patient::where('date', $today)->where('status', 'PROCESSING')->count(),
@@ -21,7 +20,6 @@ class MonitorController extends Controller
             'completed' => Patient::where('date', $today)->whereIn('status', ['COMPLETED', 'COLLECTED BY PHARMACIST OR PPK/SN', 'COLLECTED BY STAFF NURSE/PPK'])->count(),
         ];
 
-        // Fetch active queue (excluding completed orders)
         $activeQueue = Patient::where('date', $today)
             ->whereNotIn('status', ['COMPLETED', 'COLLECTED BY PHARMACIST OR PPK/SN', 'COLLECTED BY STAFF NURSE/PPK'])
             ->orderBy('time', 'desc')
@@ -30,12 +28,11 @@ class MonitorController extends Controller
         return view('dashboard', compact('kpi', 'activeQueue'));
     }
 
-    // 2. Main Monitoring History (IPS)
+    // 2. Main Monitoring History (Status Queue)
     public function index(Request $request)
     {
         $query = Patient::query(); 
 
-        // Initial page load defaults to today. If user submits with blank dates (e.g. clicks "All"), skip date filter.
         if (!$request->has('start_date')) {
             $query->where('date', date('Y-m-d'));
         } else {
@@ -48,7 +45,6 @@ class MonitorController extends Controller
             }
         }
 
-        // Apply Ward Dropdown Filter (Ignore "ALL")
         if ($request->filled('ward') && $request->ward !== 'ALL') {
             $query->where('ward', $request->ward);
         }
@@ -58,7 +54,13 @@ class MonitorController extends Controller
         return view('imonitor.status', compact('patients'));
     }
 
-    // Insert new patient record
+    // 3. NEW: Show the standalone New Order Form
+    public function create()
+    {
+        return view('imonitor.create');
+    }
+
+    // 4. Insert new patient record
     public function store(Request $request)
     {
         DB::table('patientlist')->insert([
@@ -75,18 +77,19 @@ class MonitorController extends Controller
             // Provide a strict integer for total_item2 to satisfy the DB schema
             'total_item2' => 0, 
             
-            'status' => $request->input('status', 'PROCESSING'),
+            'status' => $request->input('status', 'ORDER RECEIVED'), // Changed default to ORDER RECEIVED
             'remarks' => $request->input('remarks') ?? '-',
             'takenby' => '-',
             
-            // Provide default blank times to satisfy the strict schema requirements
             'statusready' => '00:00:00',
             'statuscollected' => '00:00:00',
         ]);
 
-        return redirect()->back()->with('success', 'Patient order added successfully.');
+        // Redirect to the status queue instead of back to the form
+        return redirect()->route('monitor.index')->with('success', 'Patient order added successfully.');
     }
 
+    // 5. Update patient record
     public function update(Request $request, $id)
     {
         $status = $request->input('status');
@@ -97,12 +100,10 @@ class MonitorController extends Controller
             'remarks' => $request->input('remarks') ?? '-',
         ];
 
-        // Dynamically capture the time when the status is updated to READY
         if ($status === 'READY FOR COLLECTION') {
             $updateData['statusready'] = date('H:i:s');
         }
 
-        // Dynamically capture the time when the status is updated to COLLECTED
         if ($status === 'COLLECTED BY PHARMACIST OR PPK/SN' || $status === 'COLLECTED BY STAFF NURSE/PPK') {
             $updateData['statuscollected'] = date('H:i:s');
         }
@@ -112,15 +113,17 @@ class MonitorController extends Controller
         return redirect()->back()->with('success', 'Patient order updated successfully.');
     }
 
-    // Delete patient record
+    // 6. Delete patient record
     public function destroy($no)
     {
         $patient = Patient::findOrFail($no);
         $patient->delete();
 
-        return redirect()->route('status.blade')->with('success', 'Patient record deleted successfully.');
+        // Fixed bad redirect route
+        return redirect()->route('monitor.index')->with('success', 'Patient record deleted successfully.');
     }
 
+    // 7. API Search
     public function searchMrn(Request $request)
     {
         $mrn = $request->query('mrn');

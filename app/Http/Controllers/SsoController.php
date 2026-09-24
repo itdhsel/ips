@@ -70,7 +70,7 @@ class SsoController extends Controller
             $user->save();
 
             // REDIRECT TO DASHBOARD
-            return redirect()->route('monitor.index');
+            return redirect()->route('dashboard');
         }
 
         // Return direct error payload for debugging if validation fails
