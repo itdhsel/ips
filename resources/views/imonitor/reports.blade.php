@@ -15,11 +15,11 @@
                 </label>
                 <select name="report" class="form-select form-select-sm medi-input py-2 fw-semibold" required>
                     <option value="">-- Select Report Category --</option>
-                    <option value="1" {{ $reportType == 1 ? 'selected' : '' }}>1. Total Patient Monthly Summary</option>
-                    <option value="2" {{ $reportType == 2 ? 'selected' : '' }}>2. Total Items Ordered Monthly</option>
-                    <option value="3" {{ $reportType == 3 ? 'selected' : '' }}>3. Total Time Frame Orders Monthly</option>
-                    <option value="4" {{ $reportType == 4 ? 'selected' : '' }}>4. Bedside Dispensing Workload by Status</option>
-                    <option value="5" {{ $reportType == 5 ? 'selected' : '' }}>5. Time Frame for Ready For Collection</option>
+                    <option value="1" {{ $reportType == 1 ? 'selected' : '' }}>Total Patient Monthly Summary</option>
+                    <option value="2" {{ $reportType == 2 ? 'selected' : '' }}>Total Items Ordered Monthly</option>
+                    <option value="3" {{ $reportType == 3 ? 'selected' : '' }}>Total Time Frame Orders Monthly</option>
+                    <option value="4" {{ $reportType == 4 ? 'selected' : '' }}>Bedside Dispensing Workload by Status</option>
+                    <option value="5" {{ $reportType == 5 ? 'selected' : '' }}>Time Frame for Ready For Collection</option>
                 </select>
             </div>
 

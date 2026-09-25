@@ -33,6 +33,32 @@ class PatientApiController extends Controller
         return response()->json(['success' => false]);
     }
 
+    // NEW: Search specifically in the 'consulting' table
+    public function searchCounsellingMrn(Request $request)
+    {
+        $mrn = $request->query('mrn');
+        
+        if (!$mrn) {
+            return response()->json(['success' => false]);
+        }
+
+        // Explicitly target the 'imonitor' DB connection and 'consulting' table
+        $patient = \Illuminate\Support\Facades\DB::connection('imonitor')
+            ->table('consulting')
+            ->where('mrn', $mrn)
+            ->orderBy('date', 'desc') // Pulls the most recently recorded spelling
+            ->first();
+
+        if ($patient) {
+            return response()->json([
+                'success' => true, 
+                'patient_name' => $patient->patient_name 
+            ]);
+        }
+
+        return response()->json(['success' => false]);
+    }
+
     public function searchEcdrMrn(Request $request)
     {
         $mrn = trim($request->query('mrn'));

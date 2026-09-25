@@ -28,6 +28,7 @@ Route::middleware(['auth', 'single.session'])->group(function () {
     Route::get('/status', [MonitorController::class, 'index'])->name('monitor.index');
 
     // iMonitor: Counselling Request Routes
+    Route::get('/api/search-counselling-mrn', [\App\Http\Controllers\PatientApiController::class, 'searchCounsellingMrn']);
     Route::get('/counselling', [ConsultingController::class, 'index'])->name('counselling.index');
     Route::post('/counselling', [ConsultingController::class, 'store'])->name('counselling.store');
     Route::post('/counselling/update/{id}', [ConsultingController::class, 'update'])->name('counselling.update');

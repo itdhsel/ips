@@ -232,7 +232,7 @@
         let originalIcon = btn.innerHTML;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         
-        fetch(`/api/search-mrn?mrn=${encodeURIComponent(mrn)}`)
+        fetch(`/api/search-counselling-mrn?mrn=${encodeURIComponent(mrn)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.patient_name) {

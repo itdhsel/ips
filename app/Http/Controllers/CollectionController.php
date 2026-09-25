@@ -13,27 +13,32 @@ class CollectionController extends Controller
         
         $query = Patient::query();
 
+        // Detect if this is an active search or a fresh sidebar click
+        $isSearch = $request->has('ward');
+
         // 1. Date Range Logic
-        if (!$request->has('start_date') && !$request->has('end_date')) {
-            $query->where('date', date('Y-m-d'));
+        if (!$isSearch) {
+            // Fresh load: default to today
+            $query->whereDate('date', date('Y-m-d'));
         } else {
+            // Filter applied: apply date range only if they have values
             if ($request->filled('start_date') && $request->filled('end_date')) {
                 $query->whereBetween('date', [$request->start_date, $request->end_date]);
             } elseif ($request->filled('start_date')) {
-                $query->where('date', '>=', $request->start_date);
+                $query->whereDate('date', '>=', $request->start_date);
             } elseif ($request->filled('end_date')) {
-                $query->where('date', '<=', $request->end_date);
+                $query->whereDate('date', '<=', $request->end_date);
             }
         }
 
         // 2. MRN Logic (Standardized)
         if ($request->filled('mrn')) {
-            $query->where('mrn', 'like', '%' . $request->mrn . '%');
+            $query->where('mrn', 'like', '%' . trim($request->mrn) . '%');
         }
 
         // 3. Name Logic (Standardized)
         if ($request->filled('name')) {
-            $query->where('patient_name', 'like', '%' . $request->name . '%');
+            $query->where('patient_name', 'like', '%' . trim($request->name) . '%');
         }
 
         // 4. Apply Ward Dropdown Filter (Ignore "ALL" string)

@@ -31,25 +31,48 @@ class MonitorController extends Controller
     // 2. Main Monitoring History (Status Queue)
     public function index(Request $request)
     {
-        $query = Patient::query(); 
+        $query = \App\Models\Patient::query(); 
 
-        if (!$request->has('start_date')) {
-            $query->where('date', date('Y-m-d'));
+        // 1. Detect if a search is active. 
+        // A fresh click from the sidebar has no parameters. 
+        // A form submission ALWAYS has 'ward', even if it is stripped of empty dates.
+        $isSearch = $request->has('ward');
+
+        if (!$isSearch) {
+            // Fresh load: default to today
+            $query->whereDate('date', date('Y-m-d'));
         } else {
+            // Filter applied: apply date range only if they have values
             if ($request->filled('start_date') && $request->filled('end_date')) {
                 $query->whereBetween('date', [$request->start_date, $request->end_date]);
             } elseif ($request->filled('start_date')) {
-                $query->where('date', '>=', $request->start_date);
+                $query->whereDate('date', '>=', $request->start_date);
             } elseif ($request->filled('end_date')) {
-                $query->where('date', '<=', $request->end_date);
+                $query->whereDate('date', '<=', $request->end_date);
             }
+            // If they are empty, it intentionally skips this block to show "All Time"
         }
 
+        // 2. MRN Logic
+        if ($request->filled('mrn')) {
+            $query->where('mrn', 'like', '%' . trim($request->mrn) . '%');
+        }
+
+        // 3. Name Logic
+        if ($request->filled('name')) {
+            $query->where('patient_name', 'like', '%' . trim($request->name) . '%');
+        }
+
+        // 4. Ward Logic
         if ($request->filled('ward') && $request->ward !== 'ALL') {
             $query->where('ward', $request->ward);
         }
 
-        $patients = $query->orderBy('date', 'desc')->orderBy('time', 'desc')->paginate(50)->withQueryString();
+        // 5. Paginate with the query string
+        $patients = $query->orderBy('date', 'desc')
+                          ->orderBy('time', 'desc')
+                          ->paginate(50)
+                          ->withQueryString(); 
 
         return view('imonitor.status', compact('patients'));
     }
