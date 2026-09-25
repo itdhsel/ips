@@ -22,7 +22,10 @@
     <div class="medi-card mb-4 overflow-hidden">
         <div class="p-4 border-bottom d-flex align-items-center justify-content-between" style="background: #ffffff; border-color: #f4f5f7 !important;">
             <div>
-                <h6 class="medi-table-title mb-1"><i class="bi bi-prescription2 me-2 text-primary"></i>Cytotoxic Drug Reconstitution Order Form</h6>
+                <h6 class="medi-table-title mb-1">
+                    <i class="bi bi-prescription2 me-2 text-primary"></i>
+                    {{ isset($reorderMaster) ? 'Cytotoxic Drug Re-Order Form' : 'Cytotoxic Drug Reconstitution Order Form' }}
+                </h6>
                 <div style="font-size: 12px; color: #8898aa;">Complete patient demographics, treatment cycles, and medication dosage</div>
             </div>
             <span class="medi-badge badge-stage-2 px-3 py-2">eCDR Module</span>
@@ -42,7 +45,7 @@
                     <div class="col-md-3">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">MRN <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" name="mrn" id="mrn" class="form-control medi-input text-uppercase border-end-0" placeholder="Enter MRN..." required>
+                            <input type="text" name="mrn" id="mrn" class="form-control medi-input text-uppercase border-end-0" placeholder="Enter MRN..." value="{{ $reorderMaster->mrn ?? '' }}" required>
                             <button type="button" class="btn border-start-0" id="btnSearchMrn" style="background: #f8f9fa; border: 1px solid #e9ecef; color: #0066ff;" title="Search MRN">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -50,50 +53,50 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Patient Name <span class="text-danger">*</span></label>
-                        <input type="text" name="patient_name" id="patient_name" class="form-control medi-input text-uppercase" placeholder="Full Patient Name" required>
+                        <input type="text" name="patient_name" id="patient_name" class="form-control medi-input text-uppercase" placeholder="Full Patient Name" value="{{ $reorderMaster->name ?? '' }}" required>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Ward <span class="text-danger">*</span></label>
                         <select name="ward" id="ward" class="form-select medi-input" required>
                             <option value="">Select Ward</option>
                             @foreach($wards ?? [] as $w)
-                                <option value="{{ $w }}">{{ $w }}</option>
+                                <option value="{{ $w }}" {{ (isset($reorderMaster) &&$reorderMaster->ward == $w) ? 'selected' : '' }}>{{$w }}</option>
                             @endforeach
                         </select>
                     </div>
                     
                     <div class="col-md-2">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Age</label>
-                        <input type="text" name="age" id="age" class="form-control medi-input" placeholder="Years">
+                        <input type="text" name="age" id="age" class="form-control medi-input" placeholder="Years" value="{{ $reorderMaster->age ?? '' }}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Gender</label>
                         <select name="sex" id="sex" class="form-select medi-input">
                             <option value="">Select</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="Male" {{ (isset($reorderMaster) &&$reorderMaster->sex == 'Male') ? 'selected' : '' }}>Male</option>
+                            <option value="Female" {{ (isset($reorderMaster) &&$reorderMaster->sex == 'Female') ? 'selected' : '' }}>Female</option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Weight (kg)</label>
-                        <input type="number" step="0.01" name="weight" id="ecdr_weight" class="form-control medi-input" placeholder="0.00">
+                        <input type="number" step="0.01" name="weight" id="ecdr_weight" class="form-control medi-input" placeholder="0.00" value="{{ $reorderMaster->weight ?? '' }}">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Height (cm)</label>
-                        <input type="number" step="0.01" name="height" id="ecdr_height" class="form-control medi-input" placeholder="0.00">
+                        <input type="number" step="0.01" name="height" id="ecdr_height" class="form-control medi-input" placeholder="0.00" value="{{ $reorderMaster->height ?? '' }}">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">BSA (m²)</label>
-                        <input type="text" name="bsa" id="ecdr_bsa" class="form-control medi-input fw-bold" placeholder="Auto-calculated" style="background-color: #f4f5f7;" readonly>
+                        <input type="text" name="bsa" id="ecdr_bsa" class="form-control medi-input fw-bold" placeholder="Auto-calculated" style="background-color: #f4f5f7;" value="{{ $reorderMaster->bsa ?? '' }}" readonly>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Diagnosis</label>
-                        <input type="text" name="diagnosis" id="diagnosis" class="form-control medi-input" placeholder="Clinical diagnosis...">
+                        <input type="text" name="diagnosis" id="diagnosis" class="form-control medi-input" placeholder="Clinical diagnosis..." value="{{ $reorderMaster->diagnosis ?? '' }}">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Protocol / Regimen</label>
-                        <input type="text" name="protocol" id="protocol" class="form-control medi-input" placeholder="e.g. FOLFOX / AC-T">
+                        <input type="text" name="protocol" id="protocol" class="form-control medi-input" placeholder="e.g. FOLFOX / AC-T" value="{{ $reorderMaster->protocol ?? '' }}">
                     </div>
                 </div>
 
@@ -140,40 +143,48 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="30%">Drug Name <span class="text-danger">*</span></th>
-                                <th width="25%">Dose <span class="text-danger">*</span></th>
-                                <th width="20%">Diluent</th>
-                                <th width="15%">Volume</th>
+                                <th width="35%">Drug Name (Ubat) <span class="text-danger">*</span></th>
+                                <th width="20%">Dose (Dos) <span class="text-danger">*</span></th>
+                                <th width="35%">Remarks (Catatan)</th>
                                 <th width="5%" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody id="drugBody">
-                            <tr>
-                                <td class="fw-bold align-middle drug-number text-muted">1</td>
-                                <td><input type="text" name="drug_name[]" class="form-control medi-input text-uppercase" placeholder="e.g. PACLITAXEL" required></td>
-                                <td><input type="text" name="dose[]" class="form-control medi-input" placeholder="e.g. 175 mg/m²" required></td>
-                                <td><input type="text" name="diluent[]" class="form-control medi-input" placeholder="e.g. NS / D5%"></td>
-                                <td><input type="text" name="volume[]" class="form-control medi-input" placeholder="e.g. 500 mL"></td>
-                                <td class="text-center align-middle">
-                                    <button type="button" class="btn btn-sm btn-delete-drug" style="color: #d32f2f; background: transparent;" disabled>
-                                        <i class="bi bi-trash fs-6"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            @if(isset($reorderDrugs) &&$reorderDrugs->count() > 0)
+                                <!-- RE-ORDER MODE: Generate previous drugs -->
+                                @foreach($reorderDrugs as $index =>$drug)
+                                <tr>
+                                    <td class="fw-bold align-middle drug-number text-muted">{{ $index + 1 }}</td>
+                                    <td><input type="text" name="drug_name[]" class="form-control medi-input text-uppercase" value="{{ $drug->ubat }}" required></td>
+                                    <td><input type="text" name="dose[]" class="form-control medi-input" value="{{ $drug->dos }}" required></td>
+                                    <td><input type="text" name="catatan[]" class="form-control medi-input" value="{{ $drug->catatan }}"></td>
+                                    <td class="text-center align-middle">
+                                        <button type="button" class="btn btn-sm btn-delete-drug" style="color: #d32f2f; background: transparent;" {{ $reorderDrugs->count() == 1 ? 'disabled' : '' }}>
+                                            <i class="bi bi-trash fs-6"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <!-- NEW ORDER MODE: Standard empty row -->
+                                <tr>
+                                    <td class="fw-bold align-middle drug-number text-muted">1</td>
+                                    <td><input type="text" name="drug_name[]" class="form-control medi-input text-uppercase" placeholder="e.g. PACLITAXEL" required></td>
+                                    <td><input type="text" name="dose[]" class="form-control medi-input" placeholder="e.g. 175 mg/m²" required></td>
+                                    <td><input type="text" name="catatan[]" class="form-control medi-input" placeholder="Drug remarks..."></td>
+                                    <td class="text-center align-middle">
+                                        <button type="button" class="btn btn-sm btn-delete-drug" style="color: #d32f2f; background: transparent;" disabled>
+                                            <i class="bi bi-trash fs-6"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
                 <button type="button" class="btn fw-bold mb-4" style="background: #e3efff; color: #0066ff; border-radius: 8px; font-size: 12px;" id="btnAddDrug">
                     <i class="bi bi-plus-lg me-1"></i> Add Drug Entry
                 </button>
-
-                <!-- REMARKS -->
-                <div class="row g-3 mb-4">
-                    <div class="col-12">
-                        <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Remarks / Special Instructions</label>
-                        <textarea name="remarks" class="form-control medi-input" rows="2" placeholder="Enter special preparation instructions or notes..."></textarea>
-                    </div>
-                </div>
 
                 <!-- 4. PHYSICIAN DETAILS -->
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom mt-4" style="border-color: #f4f5f7 !important;">
@@ -331,8 +342,7 @@
                 <td class="fw-bold align-middle drug-number text-muted">${rowCount}</td>
                 <td><input type="text" name="drug_name[]" class="form-control medi-input text-uppercase" placeholder="e.g. PACLITAXEL" required></td>
                 <td><input type="text" name="dose[]" class="form-control medi-input" placeholder="e.g. 175 mg/m²" required></td>
-                <td><input type="text" name="diluent[]" class="form-control medi-input" placeholder="e.g. NS / D5%"></td>
-                <td><input type="text" name="volume[]" class="form-control medi-input" placeholder="e.g. 500 mL"></td>
+                <td><input type="text" name="catatan[]" class="form-control medi-input" placeholder="Drug remarks..."></td>
                 <td class="text-center align-middle">
                     <button type="button" class="btn btn-sm btn-delete-drug" style="color: #d32f2f; background: transparent;">
                         <i class="bi bi-trash fs-6"></i>

@@ -69,4 +69,8 @@ Route::get('/ecdr/history', [EcdrController::class, 'history'])->name('ecdr.hist
 Route::post('/ecdr/store', [EcdrController::class, 'store'])->name('ecdr.store');
 Route::get('/ecdr/show/{id}', [EcdrController::class, 'show'])->name('ecdr.show');
 Route::post('/ecdr/cancel/{id}', [EcdrController::class, 'cancel'])->name('ecdr.cancel');
+Route::get('/ecdr/view/{id}', [\App\Http\Controllers\EcdrController::class, 'showOrder'])->name('ecdr.showOrder');
+Route::post('/ecdr/cancel/{id}', [\App\Http\Controllers\EcdrController::class, 'cancel'])->name('ecdr.cancel');
+Route::get('/ecdr/edit/{id}', [\App\Http\Controllers\EcdrController::class, 'edit'])->name('ecdr.edit');
+Route::post('/ecdr/update/{id}', [\App\Http\Controllers\EcdrController::class, 'update'])->name('ecdr.update');
 });

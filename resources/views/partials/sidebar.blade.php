@@ -87,8 +87,8 @@
                 
                 <div class="collapse {{ request()->routeIs('ecdr.*') ? 'show' : '' }}" id="collapseEcdr">
                     <div class="medi-submenu flex-column d-flex">
-                        <a href="{{ route('ecdr.create') }}" class="medi-sub-link {{ request()->routeIs('ecdr.create') ? 'active' : '' }}">Place New Order</a>
-                        <a href="{{ route('ecdr.history') }}" class="medi-sub-link {{ request()->routeIs('ecdr.history') ? 'active' : '' }}">View My Orders</a>
+                        <a href="{{ route('ecdr.create') }}" class="medi-sub-link {{ request()->routeIs('ecdr.create') ? 'active' : '' }}">New Order</a>
+                        <a href="{{ route('ecdr.history') }}" class="medi-sub-link {{ request()->routeIs('ecdr.history') ? 'active' : '' }}">My Orders</a>
                         <a href="{{ route('ecdr.ward_list') }}" class="medi-sub-link {{ request()->routeIs('ecdr.ward_list') ? 'active' : '' }}">Ward Order List</a>
                     </div>
                 </div>

@@ -43,8 +43,11 @@ class ConsultingController extends Controller
     {
         $query = DB::table('consulting');
 
+        // Detect if this is an active search or a fresh sidebar click
+        $isSearch = $request->has('ward');
+
         // 1. Date Range Logic (Defaults to Today)
-        if (!$request->has('start_date') && !$request->has('end_date')) {
+        if (!$isSearch) {
             $query->where('date', date('Y-m-d'));
         } else {
             if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -61,12 +64,12 @@ class ConsultingController extends Controller
             $query->where('mrn', 'like', '%' . trim($request->mrn) . '%');
         }
 
-        // 3. Search by Patient Name (Updated to use 'name' from the standard search bar)
+        // 3. Search by Patient Name 
         if ($request->filled('name')) {
             $query->where('patient_name', 'like', '%' . trim($request->name) . '%');
         }
 
-        // 4. Search by Ward (New feature!)
+        // 4. Search by Ward
         if ($request->filled('ward') && $request->ward !== 'ALL') {
             $query->where('ward', $request->ward);
         }

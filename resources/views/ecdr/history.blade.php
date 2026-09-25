@@ -22,13 +22,13 @@
             <table class="table medi-table mb-0 w-100">
                 <thead>
                     <tr>
-                        <th width="15%">Order Date</th>
-                        <th width="15%">Date Use</th>
+                        <th width="12%">Order Date</th>
+                        <th width="12%">Date Use</th>
                         <th width="12%">MRN</th>
-                        <th width="28%">Patient Name</th>
+                        <th width="24%">Patient Name</th>
                         <th width="10%">Ward</th>
                         <th class="text-center" width="10%">Status</th>
-                        <th class="text-center" width="10%">Action</th>
+                        <th class="text-center" width="20%">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,20 +52,59 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <button type="button" class="btn btn-sm btn-view-order" data-id="{{ $order->id }}" style="background: #e3efff; color: #0066ff; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                    <!-- 1. VIEW BUTTON (Step 1) -->
+                                    <a href="{{ route('ecdr.showOrder', $order->id) }}" class="btn btn-sm" style="background: #e3efff; color: #0066ff; border-radius: 6px; font-size: 11px; font-weight: 600;">
                                         View
-                                    </button>
+                                    </a>
+
+                                    <!-- 4. RE-ORDER BUTTON (Step 2) -->
+                                    <a href="{{ route('ecdr.create', ['reorder_id' => $order->id]) }}" class="btn btn-sm" style="background: #e3efff; color: #0066ff; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                        Re-Order
+                                    </a>
+
                                     @if($st === 'ORDER RECEIVED')
-                                        <form action="{{ route('ecdr.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this order?');">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm" style="background: #ffeaea; color: #d32f2f; border-radius: 6px; font-size: 11px; font-weight: 600;">
-                                                Cancel
-                                            </button>
-                                        </form>
+                                        <!-- 3. UPDATE BUTTON (Step 4 Prep) -->
+                                        <a href="{{ route('ecdr.edit', $order->id) }}" class="btn btn-sm" style="background: #e8f5e9; color: #2e7d32; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                            Update
+                                        </a>
+
+                                        <!-- 2. CANCEL BUTTON TRIGGER (Step 3) -->
+                                        <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->id }}" style="background: #ffeaea; color: #d32f2f; border-radius: 6px; font-size: 11px; font-weight: 600;">
+                                            Cancel
+                                        </button>
                                     @endif
                                 </div>
                             </td>
                         </tr>
+
+                        @if($st === 'ORDER RECEIVED')
+                            <!-- CANCEL MODAL FOR THIS SPECIFIC ORDER -->
+                            <div class="modal fade text-start" id="cancelModal{{ $order->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="{{ route('ecdr.cancel', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" style="font-size: 15px;">Cancel Order #{{ $order->id }}</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="text-danger fw-bold mb-3" style="font-size: 13px;">Are you sure you want to cancel this order?</p>
+                                                
+                                                <div class="form-group">
+                                                    <label class="form-label fw-bold" style="font-size: 12px;">Cancel Remarks <span class="text-danger">*</span></label>
+                                                    <textarea name="cancel_remarks" class="form-control text-uppercase" rows="2" placeholder="State reason for cancellation..." required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" style="background: #f4f5f7;">
+                                                <button type="button" class="btn btn-secondary btn-sm fw-bold" data-bs-dismiss="modal">Close Window</button>
+                                                <button type="submit" class="btn btn-danger btn-sm fw-bold">Confirm Cancellation</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @empty
                         <tr>
                             <td colspan="7" class="text-center py-5">
@@ -83,7 +122,4 @@
             <div>* Last updated on {{ date('d M Y, H:i:s') }}</div>
         </div>
     </div>
-
-    @include('ecdr.partials.view_modal')
-
 @endsection
