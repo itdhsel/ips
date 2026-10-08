@@ -44,6 +44,20 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
+        'elatihan' => [
+            'driver' => env('DB_ELATIHAN_CONNECTION', 'mysql'),
+            'host' => env('DB_ELATIHAN_HOST', '127.0.0.1'),
+            'port' => env('DB_ELATIHAN_PORT', '3306'),
+            'database' => env('DB_ELATIHAN_DATABASE', 'elatihanv3'),
+            'username' => env('DB_ELATIHAN_USERNAME', 'root'),
+            'password' => env('DB_ELATIHAN_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'imonitor' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

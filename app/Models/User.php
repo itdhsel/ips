@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB; // Required for the position query
 
 class User extends Authenticatable
 {
@@ -31,5 +32,32 @@ class User extends Authenticatable
     public function getAuthPassword()
     {
         return $this->login_pwd;
+    }
+
+    /**
+     * Get the user's name without parentheses
+     * Usage in blade: {{ auth()->user()->clean_name }}
+     */
+    public function getCleanNameAttribute()
+    {
+        return trim(explode('(', $this->name)[0]);
+    }
+
+/**
+     * Fetch the user's position from the elatihanv3 database
+     */
+    public function getPositionAttribute()
+    {
+        $cleanName = $this->clean_name;
+
+        $wildcardName = str_replace(' ', '%', trim($cleanName));
+
+        $peribadi = DB::connection('elatihan')
+            ->table('peribadi')
+            ->where('namapegawai', 'LIKE', '%' . $wildcardName . '%')
+            ->first();
+
+        // Returns 'skim_khidmat' if found, otherwise falls back to the user's 'role'
+        return $peribadi ? $peribadi->skim_khidmat : $this->role;
     }
 }

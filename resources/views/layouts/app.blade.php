@@ -35,10 +35,11 @@
                 <div class="d-flex align-items-center gap-3">
                     <div class="text-end d-none d-md-block" style="line-height: 1.2;">
                         <div style="font-size: 13px; font-weight: 700; color: #172b4d;">
-                            {{ auth()->user()->name ?? 'Unknown' }}
+                            <!-- Changed to clean_name -->
+                            {{ auth()->user()->clean_name ?? 'Unknown' }}
                         </div>
                         <div style="font-size: 11px; font-weight: 500; color: #8898aa; text-transform: uppercase; letter-spacing: 0.5px;">
-                            {{ auth()->user()->role ?? 'User' }}
+                            {{ auth()->user()->position ?? 'User' }}
                         </div>
                     </div>
                     <div style="width: 38px; height: 38px; border-radius: 10px; background: #e3efff; color: #0066ff; display: flex; align-items: center; justify-content: center;">
