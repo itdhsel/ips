@@ -42,6 +42,17 @@ class SsoController extends Controller
 
             $shortUsername = substr($shortUsername, 0, 30);
 
+            // --- ROLE ASSIGNMENT LOGIC ---
+            // Extract the AD job description sent from your dh-sso
+            $jobDescription = $ssoUser['job_description'] ?? 'Unknown';
+
+            // Define which Active Directory OUs get admin rights
+            $adminDepartments = ['ITD', 'Admin', 'Pengurusan'];
+            
+            // Assign 'admin' if they match the list, otherwise 'user'
+            $assignedRole = in_array($jobDescription, $adminDepartments) ? 'admin' : 'user';
+            // -----------------------------
+
             // Find the user, or create them if they are new
             $user = User::where('login_username', $shortUsername)->first();
 
@@ -49,13 +60,14 @@ class SsoController extends Controller
                 $user = User::create([
                     'login_username' => $shortUsername,
                     'name'           => $ssoUser['name'] ?? $shortUsername,
-                    'role'           => 'user', 
+                    'role'           => $assignedRole, // Maps to 'admin' or 'user'
                     'login_pwd'      => md5(Str::random(16)),
                     'login_stamp'    => now()
                 ]);
             } else {
                 $user->update([
                     'name'        => $ssoUser['name'] ?? $shortUsername,
+                    'role'        => $assignedRole, // Updates role if they changed departments
                     'login_stamp' => now()
                 ]);
             }

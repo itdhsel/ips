@@ -207,9 +207,9 @@
                     <button type="submit" class="btn fw-bold px-4" style="background: #0066ff; color: #fff; border-radius: 8px; height: 42px; font-size: 13px;">
                         <i class="bi bi-check2-circle me-1"></i> Submit CDR Order
                     </button>
-                    <button type="reset" class="btn fw-bold px-4" style="background: #f4f5f7; color: #525f7f; border-radius: 8px; height: 42px; font-size: 13px;">
+                    <a href="{{ route('ecdr.create') }}" class="btn fw-bold px-4 d-flex align-items-center justify-content-center" style="background: #f4f5f7; color: #525f7f; border-radius: 8px; height: 42px; font-size: 13px; text-decoration: none;">
                         Reset Form
-                    </button>
+                    </a>
                 </div>
             </form>
         </div>

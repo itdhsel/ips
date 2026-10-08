@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class EcdrController extends Controller
 {
-    public function create(Request $request) // <-- Note the added Request $request
+    public function create(Request $request) 
     {
         $wards = [
             "4A","4B","4C","5A","5B","5C","6B","7A","7B","7C","7D","8A","8D","9A","9B","9C","9D","10A","10B","11C",
@@ -23,15 +23,14 @@ class EcdrController extends Controller
         if ($request->has('reorder_id')) {
             $reorderMaster = DB::connection('ecdr')->table('cdr')->where('cdr_id', $request->reorder_id)->first();
             if ($reorderMaster) {
-                // Pull the legacy drugs exactly as they were entered before
-                $reorderDrugs = DB::connection('ecdr')->table('cdr_drugs')->where('cdrid', $request->reorder_id)->get();
+                // FIXED: Changed cdrid to cdr_id
+                $reorderDrugs = DB::connection('ecdr')->table('cdr_drugs')->where('cdr_id', $request->reorder_id)->get();
             }
         }
 
         return view('ecdr.create', compact('wards', 'reorderMaster', 'reorderDrugs'));
     }
     
-
     public function wardList(Request $request)
     {
         $wards = [
@@ -123,7 +122,7 @@ class EcdrController extends Controller
             foreach ($drugNames as $index => $drugName) {
                 if (!empty($drugName)) {
                     DB::connection('ecdr')->table('cdr_drugs')->insert([
-                        'cdr_id'  => $cdrId, // Changed from cdrid back to cdr_id
+                        'cdr_id'  => $cdrId, 
                         'mrn'     => $request->input('mrn'), 
                         'ubat'    => $drugName,
                         'dos'     => $doses[$index] ?? '-',
@@ -169,8 +168,8 @@ class EcdrController extends Controller
 
         $cycles = DB::connection('ecdr')->table('cdr_orders')->where('order_id', $id)->orderBy('date_use', 'asc')->get();
         
-        // Querying cdrid to match legacy structure
-        $drugs = DB::connection('ecdr')->table('cdr_drugs')->where('cdrid', $id)->get(); 
+        // FIXED: Changed cdrid to cdr_id
+        $drugs = DB::connection('ecdr')->table('cdr_drugs')->where('cdr_id', $id)->get(); 
 
         return response()->json([
             'success' => true,
@@ -193,6 +192,7 @@ class EcdrController extends Controller
             ->orderBy('date_use', 'asc')
             ->get();
             
+        // FIXED: Explicitly checked this one, it was already cdr_id
         $drugs = DB::connection('ecdr')->table('cdr_drugs')
             ->where('cdr_id', $id)
             ->get(); 
@@ -215,7 +215,9 @@ class EcdrController extends Controller
         }
 
         $cycles = DB::connection('ecdr')->table('cdr_orders')->where('order_id', $id)->orderBy('date_use', 'asc')->get();
-        $drugs = DB::connection('ecdr')->table('cdr_drugs')->where('cdrid', $id)->get();
+        
+        // FIXED: Changed cdrid to cdr_id
+        $drugs = DB::connection('ecdr')->table('cdr_drugs')->where('cdr_id', $id)->get();
 
         return view('ecdr.edit', compact('wards', 'master', 'cycles', 'drugs'));
     }
@@ -254,14 +256,16 @@ class EcdrController extends Controller
             }
 
             // 3. Refresh Cytotoxic Drug Details
-            DB::connection('ecdr')->table('cdr_drugs')->where('cdrid', $id)->delete();
+            // FIXED: Changed cdrid to cdr_id
+            DB::connection('ecdr')->table('cdr_drugs')->where('cdr_id', $id)->delete();
             $drugNames = $request->input('drug_name', []);
             $doses = $request->input('dose', []);
             $catatans = $request->input('catatan', []); 
+            
             foreach ($drugNames as $index => $drugName) {
                 if (!empty($drugName)) {
                     DB::connection('ecdr')->table('cdr_drugs')->insert([
-                        'cdrid'   => $id, 
+                        'cdr_id'  => $id, // FIXED: Changed cdrid to cdr_id
                         'mrn'     => $request->input('mrn'), 
                         'ubat'    => $drugName,
                         'dos'     => $doses[$index] ?? '-',
