@@ -192,6 +192,7 @@
 
 @push('scripts')
 <script>
+    // Existing Date Preset Function
     function setDatePreset(type) {
         let startDateInput = document.getElementById('start_date');
         let endDateInput = document.getElementById('end_date');
@@ -221,5 +222,56 @@
         }
         if(form) form.submit();
     }
+
+    // NEW: Function to validate the form before submitting
+    function validateForm() {
+        let checkedBoxes = document.querySelectorAll('.chk-item:checked');
+        if (checkedBoxes.length === 0) {
+            alert('Please select at least one item to update.');
+            return false;
+        }
+        return true;
+    }
+
+    // NEW: Logic to handle checkboxes and enable/disable the submit button
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkAllBtn = document.getElementById('checkAll');
+        const itemCheckboxes = document.querySelectorAll('.chk-item');
+        const submitBtn = document.getElementById('sendButton');
+
+        // Function to toggle the submit button state
+        function toggleSubmitButton() {
+            const isAnyChecked = document.querySelectorAll('.chk-item:checked').length > 0;
+            submitBtn.disabled = !isAnyChecked;
+        }
+
+        // Handle "Check All" click
+        if (checkAllBtn) {
+            checkAllBtn.addEventListener('change', function() {
+                itemCheckboxes.forEach(checkbox => {
+                    checkbox.checked = checkAllBtn.checked;
+                });
+                toggleSubmitButton();
+            });
+        }
+
+        // Handle individual checkbox clicks
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                toggleSubmitButton();
+                
+                // Uncheck the "Check All" box if one item gets unchecked
+                if (!this.checked && checkAllBtn) {
+                    checkAllBtn.checked = false;
+                }
+                
+                // Re-check "Check All" if all individual boxes are checked
+                const allChecked = document.querySelectorAll('.chk-item:checked').length === itemCheckboxes.length;
+                if (allChecked && checkAllBtn && itemCheckboxes.length > 0) {
+                    checkAllBtn.checked = true;
+                }
+            });
+        });
+    });
 </script>
 @endpush

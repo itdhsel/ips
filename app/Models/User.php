@@ -23,9 +23,10 @@ class User extends Authenticatable
     protected $fillable = [
         'login_username',
         'name',
+        'email',
+        'role',          
         'login_pwd',
-        'role',
-        'login_stamp'
+        'login_stamp',
     ];
 
     // Tell Laravel which column is used for the password

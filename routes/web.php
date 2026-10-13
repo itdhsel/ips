@@ -24,39 +24,47 @@ Route::middleware(['auth', 'single.session'])->group(function () {
     // Default Route: Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    // iMonitor: Discharge Medications Status Route
+    // Accessible by ALL Users (Order Status & Collection)
     Route::get('/status', [MonitorController::class, 'index'])->name('monitor.index');
 
-    // iMonitor: Counselling Request Routes
-    Route::get('/api/search-counselling-mrn', [\App\Http\Controllers\PatientApiController::class, 'searchCounsellingMrn']);
-    Route::get('/counselling', [ConsultingController::class, 'index'])->name('counselling.index');
-    Route::post('/counselling', [ConsultingController::class, 'store'])->name('counselling.store');
-    Route::post('/counselling/update/{id}', [ConsultingController::class, 'update'])->name('counselling.update');
-
-    // iMonitor: Discharge Medication Collection Routes
     Route::get('/collection', [CollectionController::class, 'index'])->name('collection.index');
     Route::post('/collection/update', [CollectionController::class, 'store'])->name('collection.store');
 
-    // iMonitor: Reporting Submodule
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    // Restricted: ONLY ITD & PEGAWAI FARMASI
+    Route::middleware(['role:ITD,PEGAWAI FARMASI,admin,ADMIN'])->group(function () {
+
+    // iMonitor: Counselling Request Routes
+        Route::get('/api/search-counselling-mrn', [\App\Http\Controllers\PatientApiController::class, 'searchCounsellingMrn']);
+        Route::get('/counselling', [ConsultingController::class, 'index'])->name('counselling.index');
+        Route::post('/counselling', [ConsultingController::class, 'store'])->name('counselling.store');
+        Route::post('/counselling/update/{id}', [ConsultingController::class, 'update'])->name('counselling.update');
+
+        // iMonitor: Reporting Submodule
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        
+        // If 'monitor.create' and 'counselling.list' are defined in this file, move them into this group as well!
+    });
 
     // API Routes
     Route::get('/api/search-mrn', [PatientApiController::class, 'searchImonitorMrn'])->name('api.search.mrn');
     Route::get('/api/search-mrn/ecdr', [PatientApiController::class, 'searchEcdrMrn'])->name('api.search.mrn.ecdr');
 
-    // --- ONLY ADMIN & FARMASI (ITD is automatically allowed by middleware) ---
-    Route::middleware(['role:ADMIN,FARMASI'])->group(function () {
+    // --- ADMIN & PEGAWAI FARMASI (ITD is automatically allowed by middleware) ---
+    Route::middleware(['role:ADMIN,PEGAWAI FARMASI'])->group(function () {
+            
+        // Status updates
         Route::post('/status/update/{id}', [MonitorController::class, 'update'])->name('monitor.update');
-    });
-
-    // --- ONLY ADMIN (ITD is automatically allowed by middleware) ---
-    Route::middleware(['role:ADMIN'])->group(function () {
+        
+        // New Order & Management
         Route::get('/status/new-order', [MonitorController::class, 'create'])->name('monitor.create');
         Route::post('/status/store', [MonitorController::class, 'store'])->name('monitor.store');
         Route::delete('/status/delete/{id}', [MonitorController::class, 'destroy'])->name('monitor.destroy');
+        
+        // Counselling List
         Route::get('/counselling/list', [ConsultingController::class, 'list'])->name('counselling.list');
+        
     });
-
+    
     // --- ONLY MEDICAL STAFF (ITD is automatically allowed by middleware) ---
     Route::middleware(['role:DOKTOR,NURS,FARMASI'])->group(function () {
         Route::get('/ecdr/create', [EcdrController::class, 'create'])->name('ecdr.create');

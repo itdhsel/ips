@@ -56,16 +56,28 @@
                 
                 <div class="collapse {{ $isMonitorActive ? 'show' : '' }}" id="collapseMonitor">
                     <div class="medi-submenu flex-column d-flex">
+                        
+                        @php
+                            $userRole = auth()->check() ? strtolower(auth()->user()->role) : '';
+                            $hasFullAccess = str_contains($userRole, 'admin') 
+                                          || str_contains($userRole, 'itd') 
+                                          || str_contains($userRole, 'farmasi');
+                        @endphp
                             
-                        @if(auth()->check() && auth()->user()->role === 'admin')
+                        <!-- 1. New Order (Restricted) -->
+                        @if($hasFullAccess)
                         <a href="{{ route('monitor.create') }}" class="medi-sub-link {{ request()->routeIs('monitor.create') ? 'active' : '' }}">New Order</a>
                         @endif
                             
-                        <a href="{{ route('counselling.index') }}" class="medi-sub-link {{ request()->routeIs('counselling.index') ? 'active' : '' }}">New Counselling</a>
+                        <!-- 2. Order Status (All Users) -->
                         <a href="{{ route('monitor.index') }}" class="medi-sub-link {{ request()->routeIs('monitor.index') ? 'active' : '' }}">Order Status</a>
+                        
+                        <!-- 3. Collection (All Users) -->
                         <a href="{{ route('collection.index') }}" class="medi-sub-link {{ request()->routeIs('collection.index') ? 'active' : '' }}">Collection</a>
                             
-                        @if(auth()->check() && auth()->user()->role === 'admin')
+                        <!-- 4, 5, 6. Counselling & Reporting (Restricted) -->
+                        @if($hasFullAccess)
+                        <a href="{{ route('counselling.index') }}" class="medi-sub-link {{ request()->routeIs('counselling.index') ? 'active' : '' }}">New Counselling</a>
                         <a href="{{ route('counselling.list') }}" class="medi-sub-link {{ request()->routeIs('counselling.list') ? 'active' : '' }}">Counselling List</a>
                         <a href="{{ route('reports.index') }}" class="medi-sub-link {{ request()->routeIs('reports.index') ? 'active' : '' }}">Reporting</a>
                         @endif

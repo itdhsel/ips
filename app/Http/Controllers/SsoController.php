@@ -33,6 +33,7 @@ class SsoController extends Controller
         // 2. Foolproof check: If it has 'valid' and it is true, proceed!
         if (is_array($responseData) && isset($responseData['valid']) && $responseData['valid'] == true) {
             $ssoUser = $responseData['user'];
+            //dd($ssoUser);
             
             // Safely extract username regardless of AD format
             $rawIdentifier = $ssoUser['username'] ?? $ssoUser['email'] ?? 'unknown_user';
@@ -43,14 +44,8 @@ class SsoController extends Controller
             $shortUsername = substr($shortUsername, 0, 30);
 
             // --- ROLE ASSIGNMENT LOGIC ---
-            // Extract the AD job description sent from your dh-sso
-            $jobDescription = $ssoUser['job_description'] ?? 'Unknown';
-
-            // Define which Active Directory OUs get admin rights
-            $adminDepartments = ['ITD', 'Admin', 'Pengurusan'];
-            
-            // Assign 'admin' if they match the list, otherwise 'user'
-            $assignedRole = in_array($jobDescription, $adminDepartments) ? 'admin' : 'user';
+            // Capture the job_description sent from the SSO server
+            $assignedRole = $ssoUser['job_description'] ?? 'Unknown';
             // -----------------------------
 
             // Find the user, or create them if they are new
@@ -60,14 +55,14 @@ class SsoController extends Controller
                 $user = User::create([
                     'login_username' => $shortUsername,
                     'name'           => $ssoUser['name'] ?? $shortUsername,
-                    'role'           => $assignedRole, // Maps to 'admin' or 'user'
+                    'role'           => $assignedRole, // Saves PEGAWAI FARMASI
                     'login_pwd'      => md5(Str::random(16)),
                     'login_stamp'    => now()
                 ]);
             } else {
                 $user->update([
                     'name'        => $ssoUser['name'] ?? $shortUsername,
-                    'role'        => $assignedRole, // Updates role if they changed departments
+                    'role'        => $assignedRole, // Updates PEGAWAI FARMASI
                     'login_stamp' => now()
                 ]);
             }

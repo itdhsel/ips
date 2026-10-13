@@ -7,7 +7,10 @@
 
 @php
     $wards = ["2C","4A","4B","4C","4D","5A","5B","5C","5D","6A","6B","6C","6D","7A","7B","7C","7D","8A","8B","8C","8D","9A","9B","9C","9D","10A","10B","10C","10D","11B","11C","NICU","HDW","BURN UNIT","LABOUR ROOM","ICU","ED","OTHERS"];
-    $isAdmin = auth()->check() && in_array(auth()->user()->role, ['admin', 'pharmacy']);
+    $userRole = auth()->check() ? strtolower(auth()->user()->role) : '';
+    $isAdmin = str_contains($userRole, 'admin') 
+            || str_contains($userRole, 'itd') 
+            || str_contains($userRole, 'farmasi');
 @endphp
 
 <!-- STANDARDIZED SEARCH BAR -->
@@ -212,11 +215,15 @@
                                 <label class="form-label fw-bold" style="font-size: 12px; color: #525f7f;">Status</label>
                                 <select name="status" class="form-select medi-input fw-bold">
                                     <option value="ORDER RECEIVED" {{ $patient->status == 'ORDER RECEIVED' ? 'selected' : '' }}>ORDER RECEIVED</option>
+                                    
                                     <option value="PROCESSING" {{ $patient->status == 'PROCESSING' ? 'selected' : '' }}>PROCESSING</option>
+                                    
                                     <option value="READY FOR COLLECTION" {{ $patient->status == 'READY FOR COLLECTION' ? 'selected' : '' }}>READY FOR COLLECTION</option>
-                                    <option value="COLLECTED BY PHARMACIST OR PPK/SN" {{ $patient->status == 'COLLECTED BY PHARMACIST OR PPK/SN' ? 'selected' : '' }}>COLLECTED BY PHARMACIST OR PPK/SN</option>
-                                    <option value="COLLECTED BY STAFF NURSE/PPK" {{ $patient->status == 'COLLECTED BY STAFF NURSE/PPK' ? 'selected' : '' }}>COLLECTED BY STAFF NURSE/PPK</option>
+                                    
+                                    <option value="COLLECTED BY STAFF" {{ str_contains($patient->status, 'COLLECTED') ? 'selected' : '' }}>COLLECTED BY STAFF</option>
+                                    
                                     <option value="COMPLETED" {{ $patient->status == 'COMPLETED' ? 'selected' : '' }}>COMPLETED</option>
+                                    
                                     <option value="CANCELLED" {{ $patient->status == 'CANCELLED' ? 'selected' : '' }}>CANCELLED</option>
                                 </select>
                             </div>

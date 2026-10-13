@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -10,23 +9,23 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = Auth::user();
-
-        // 1. Block if not logged in at all
-        if (!$user) {
-            abort(403, 'Unauthorized action.');
+        if (!Auth::check()) {
+            return redirect('/login');
         }
 
-        // 2. SUPER ADMIN BYPASS: If the user is ITD, grant access to everything
-        if ($user->role === 'ITD') {
+        // Get the user's role from the database, force lowercase, and trim spaces
+        $userRole = strtolower(trim(Auth::user()->role ?? ''));
+
+        // Clean up the allowed roles passed from the routes/web.php file
+        $allowedRoles = array_map('strtolower', array_map('trim', $roles));
+
+        // If the user's role is in the allowed list, grant access!
+        if (in_array($userRole, $allowedRoles)) {
             return $next($request);
         }
 
-        // 3. Normal Role Check: Block if they are not in the allowed list
-        if (!in_array($user->role, $roles)) {
-            abort(403, 'Unauthorized action. You do not have permission to view this module.');
-        }
-
-        return $next($request);
+        // If it fails, print exactly what the middleware saw to help debug
+        $allowedString = implode(', ', $allowedRoles);
+        abort(403, "Access Denied. Your DB Role: '{$userRole}'. Allowed Roles: '{$allowedString}'.");
     }
 }
